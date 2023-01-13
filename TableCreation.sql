@@ -1,0 +1,70 @@
+CREATE DATABASE quiz;
+GO
+USE quiz;
+CREATE TABLE UserRoles(
+    UserRoleId INT IDENTITY(1,1) PRIMARY KEY,
+    UserRole VARCHAR(50) NOT NULL
+)
+
+CREATE TABLE QuizCategories (
+    QuizCategoryID INT IDENTITY(1,1) PRIMARY KEY,
+    QuizCategoryName VARCHAR(255) NOT NULL,
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE Users (
+    UserID INT IDENTITY(1,1) PRIMARY KEY,
+    UserName VARCHAR(255) NOT NULL,
+    FirstName VARCHAR(255) NOT NULL,
+    LastName VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    DateOfBirth DATE NOT NULL,
+    [Password] VARCHAR(255) NOT NULL,
+    UserRoleId INT NOT NULL DEFAULT 2
+);
+
+CREATE TABLE Questions (
+    QuestionID INT IDENTITY(1,1) PRIMARY KEY,
+    QuizCategoryID INT NOT NULL FOREIGN KEY REFERENCES QuizCategories(QuizCategoryID),
+    QuestionText VARCHAR(255) NOT NULL,
+    QuestionType INT NOT NULL,
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE Options(
+    OptionID INT IDENTITY(1,1) PRIMARY KEY,
+    QuestionID INT NOT NULL FOREIGN KEY REFERENCES Questions(QuestionID),
+    OptionText VARCHAR(255) NOT NULL,
+    IsCorrect BIT NOT NULL
+)
+
+CREATE TABLE Quizzes (
+    QuizID INT IDENTITY(1,1) PRIMARY KEY,
+    QuizName VARCHAR(255) NOT NULL,
+    QuizCategoryID INT NOT NULL FOREIGN KEY REFERENCES QuizCategories(QuizCategoryID),
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE QuizSubmissions (
+    QuizSubmissionID INT IDENTITY(1,1) PRIMARY KEY,
+    QuizID INT NOT NULL FOREIGN KEY REFERENCES Quizzes(QuizID),
+    UserID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
+    StartTime DATETIME NOT NULL,
+    EndTime DATETIME NULL,
+    Score INT NOT NULL,
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE QuizQuestions (
+    QuizQuestionID INT IDENTITY(1,1) PRIMARY KEY,
+    QuizID INT NOT NULL FOREIGN KEY REFERENCES Quizzes(QuizID),
+    QuestionID INT NOT NULL FOREIGN KEY REFERENCES Questions(QuestionID),
+    SelectedOptionId INT NOT NULL,
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE Feedback (
+    FeedbackID INT IDENTITY(1,1) PRIMARY KEY,
+    Rating INT NOT NULL,
+    FeedbackText VARCHAR(MAX) NULL
+);
