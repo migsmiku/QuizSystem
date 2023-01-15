@@ -1,0 +1,184 @@
+﻿@model OnlineQuiz.Models.QuizViewModel
+
+@{
+    ViewData["Title"] = "StartQuiz";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/Quiz.js"></script>
+<script>
+    $(document).ready(function () {
+        var currentQuestionIndex = $("#currentQuestionIndex").val();
+        var totalQuestions = @Model.Questions.Count;
+
+        setAnsweredQuestions();
+
+        checkCurrentQuestionIndex(currentQuestionIndex)
+
+        var selectedValues = [];
+
+        $('input[type="radio"]').on('change', function () {
+            if ($(this).prop('checked')) {
+                selectedValues.push($(this).val());
+            } else {
+                var index = selectedValues.indexOf($(this).val());
+                selectedValues.splice(index, 1);
+            }
+            localStorage.setItem("selectedValues", JSON.stringify(selectedValues));
+        });
+
+        // On page refresh, set the selected radio button's "checked" property to true
+        $(document).ready(function () {
+            var selectedValues = JSON.parse(localStorage.getItem("selectedValues"));
+            $('input[type="radio"]').each(function () {
+                if (selectedValues.includes($(this).val())) {
+                    $(this).prop('checked', true);
+                }
+            });
+        });
+
+        $("#previous-button").click(function () {
+            var currentQuestionIndex = $("#currentQuestionIndex").val();
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                // code to show the previous question
+                $("#currentQuestionIndex").val(currentQuestionIndex);
+                $("#question" + currentQuestionIndex).show();
+                $("#question" + (currentQuestionIndex + 1)).hide();
+            }
+            checkCurrentQuestionIndex(currentQuestionIndex)
+
+            setAnsweredQuestions();
+        });
+
+        $("#next-button").click(function () {
+            var currentQuestionIndex = $("#currentQuestionIndex").val();
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                // code to show the next question
+                $("#currentQuestionIndex").val(currentQuestionIndex);
+                $("#question" + currentQuestionIndex).show();
+                $("#question" + (currentQuestionIndex - 1)).hide();
+            }
+            checkCurrentQuestionIndex(currentQuestionIndex)
+
+            setAnsweredQuestions();
+        });
+        
+        $("#quizForm").submit(function (e) {
+            localStorage.clear();
+            var answeredQuestions = $("input[type='radio']:checked").length;
+            if (answeredQuestions < totalQuestions) {
+                if(!confirm("You have unanswered questions. Are you sure you want to submit?")){
+                e.preventDefault();
+            }
+            }
+        });
+
+        $(".nav-link").click(function (e) {
+            e.preventDefault();
+
+            var questionId = $(this).attr("href");
+            var currentQuestionIndex = questionId.substring(9);
+
+            $("#currentQuestionIndex").val(currentQuestionIndex);
+
+            checkCurrentQuestionIndex(currentQuestionIndex)
+            setAnsweredQuestions();
+
+            $("[id^=question]").hide();
+
+            $(questionId).show();
+        });
+
+        function setAnsweredQuestions() {
+            var totalQuestions = $("#totalQuestions").val();
+            for (var i = 0; i < totalQuestions; i++) {
+                var radioButtons = $("input[name=selectedOptionId_" + i + "]");
+                var selected = false;
+                radioButtons.each(function () {
+                    if (this.checked) {
+                        selected = true;
+                        return false;
+                    }
+                });
+                if (selected) {
+                    $("#Navquestion" + i).addClass("answered");
+                } else {
+                    $("#Navquestion" + i).addClass("unanswered");
+                }
+            }
+        }
+
+        function checkCurrentQuestionIndex(currentQuestionIndex) {
+            if (currentQuestionIndex == 0) {
+                $("#previous-button").hide();
+            } else {
+                $("#previous-button").show();
+            }
+
+            if (currentQuestionIndex == totalQuestions - 1) {
+                $("#next-button").hide();
+            } else {
+                $("#next-button").show();
+            }
+        }
+    });
+
+    
+
+    
+</script>
+<div id="countdown"></div>
+<hr />
+<h1 class="accordion-header">@Model.QuizName</h1>
+
+<form id="quizForm" action="submitquiz" method="post" class="form-control">
+    <div class="d-flex justify-content-center">
+        <div class="nav nav-pills">
+            @for (int i = 0; i < Model.Questions.Count; i++)
+            {
+                <a id="Navquestion@(i)" class="nav-link" href="#question@(i)">Question @(i + 1)</a>
+            }
+        </div>
+        
+    </div>
+    <input type="hidden" id="currentQuestionIndex" name="currentQuestionIndex" value="0">
+    <input type="hidden" id="totalQuestions" name="totalQuestions" value="@Model.Questions.Count">
+    <div>
+        @for (int i = 0; i < Model.Questions.Count; i++)
+        {
+            <div id="question@(i)"
+            style="display: @(i == Model.CurrentQuestionIndex ? "" : "none")">
+                <h4>Question @(i + 1)</h4>
+                <hr />
+                <p>@(i + 1). @Model.Questions[i].QuestionText</p>
+                <input asp-for=@Model.Questions[i].QuestionId type="hidden" />
+                @foreach (var option in @Model.Options.Where(x => x.QuestionId == @Model.Questions[i].QuestionId))
+                {
+                    <dl class="row" style="display: flex; flex-wrap: nowrap;">
+                        <dd class="col-sm-12 float-left">
+                            <input type="radio" name="selectedOptionId_@(i)" value="@option.OptionId"
+                        id="option@(option.OptionId)">
+                            <label for="option@(option.OptionId)">@option.OptionText</label>
+                        </dd>
+                    </dl>
+                }
+
+        </div>
+        }
+    </div>
+
+
+
+
+    <div class="d-flex">
+        <button id="previous-button" type="button"
+            class="btn btn-primary align-content-center mr-auto">Previous</button>
+        <button id="next-button" type="button" class="btn btn-primary align-content-center mr-auto">Next</button>
+        <button id="submit" method="post" asp-action="SubmitQuiz" asp-controller="Quiz"
+            class="btn btn-outline-warning ml-auto">Submit</button>
+    </div>
+
+
+</form>

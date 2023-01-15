@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
     using OnlineQuiz.Models;
 
-    
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -17,6 +17,11 @@
 
         [Authorize]
         public IActionResult Index()
+        {
+            return RedirectToAction("ChooseQuizCategory", "Quiz");
+        }
+
+        public IActionResult Feedback()
         {
             return View();
         }

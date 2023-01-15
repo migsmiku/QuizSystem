@@ -1,0 +1,35 @@
+﻿@model OnlineQuiz.Models.QuizViewModel
+
+<div>
+    <h4>QuizViewModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.QuizName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.QuizName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CurrentQuestionIndex)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CurrentQuestionIndex)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.QuizName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.QuizName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

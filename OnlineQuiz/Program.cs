@@ -1,4 +1,4 @@
-using OnlineQuiz.DAO;
+using OnlineQuiz.DAL;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +11,21 @@ builder.Services.AddAuthentication("Cookie").AddCookie("Cookie", options =>
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
+//add session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
 
 IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
 builder.Services.AddSingleton<IConfiguration>(config);
 
-builder.Services.AddScoped<IAccountDAO, AccountDAO>();
+builder.Services.AddScoped<IAccountDAL, AccountDAL>();
+builder.Services.AddScoped<IQuizDAL, QuizDAL>();
 
 WebApplication app = builder.Build();
 
@@ -32,6 +41,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+//use session
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

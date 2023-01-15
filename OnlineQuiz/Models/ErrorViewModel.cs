@@ -6,6 +6,6 @@ namespace OnlineQuiz.Models
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-        public string ErrorDescription { get; set; }
+        public string? ErrorDescription { get; set; }
     }
 }
