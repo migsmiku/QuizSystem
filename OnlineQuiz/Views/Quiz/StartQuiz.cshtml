@@ -27,21 +27,20 @@
             localStorage.setItem("selectedValues", JSON.stringify(selectedValues));
         });
 
-        // On page refresh, set the selected radio button's "checked" property to true
-        $(document).ready(function () {
-            var selectedValues = JSON.parse(localStorage.getItem("selectedValues"));
-            $('input[type="radio"]').each(function () {
-                if (selectedValues.includes($(this).val())) {
-                    $(this).prop('checked', true);
-                }
-            });
+        var selectedValues = JSON.parse(localStorage.getItem("selectedValues"));
+        
+        $('input[type="radio"]').each(function () {
+            if (selectedValues.includes($(this).val())) {
+                $(this).prop('checked', true);
+            }
         });
+            
+
 
         $("#previous-button").click(function () {
             var currentQuestionIndex = $("#currentQuestionIndex").val();
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
-                // code to show the previous question
                 $("#currentQuestionIndex").val(currentQuestionIndex);
                 $("#question" + currentQuestionIndex).show();
                 $("#question" + (currentQuestionIndex + 1)).hide();
@@ -55,7 +54,6 @@
             var currentQuestionIndex = $("#currentQuestionIndex").val();
             if (currentQuestionIndex < totalQuestions - 1) {
                 currentQuestionIndex++;
-                // code to show the next question
                 $("#currentQuestionIndex").val(currentQuestionIndex);
                 $("#question" + currentQuestionIndex).show();
                 $("#question" + (currentQuestionIndex - 1)).hide();
