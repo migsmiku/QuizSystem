@@ -1,20 +1,18 @@
 ﻿namespace OnlineQuiz.Models
 {
     using System.ComponentModel.DataAnnotations;
-    using System.Drawing;
-    using System.Xml.Linq;
 
-    public class UserRegisterModel : User
+    public class UserRegisterModel : Users
     {
         [Required]
-        public string FirstName { get; set; }
+        public new string? FirstName { get; set; }
         [Required]
-        public string LastName { get; set; }
+        public new string? LastName { get; set; }
         [Required]
-        public string Email { get; set; }
+        public new string? Email { get; set; }
         [Required]
         [Display(Name = "Date of Birth")]
         [DataType(DataType.Date)]
-        public DateTime DateOfBirth { get; set; }
+        public new DateTime DateOfBirth { get; set; }
     }
 }

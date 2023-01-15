@@ -1,12 +1,12 @@
-﻿namespace OnlineQuiz.DAO
+﻿namespace OnlineQuiz.DAL
 {
     using System.Data.SqlClient;
 
-    public class DAOBase
+    public class DALBase
     {
         private readonly IConfiguration _config;
 
-        public DAOBase(IConfiguration config)
+        public DALBase(IConfiguration config)
         {
             _config = config;
         }

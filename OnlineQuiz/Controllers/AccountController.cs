@@ -3,16 +3,15 @@
     using System.Diagnostics;
     using System.Security.Claims;
     using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using OnlineQuiz.DAO;
+    using OnlineQuiz.DAL;
     using OnlineQuiz.Models;
 
     public class AccountController : Controller
     {
-        private readonly IAccountDAO _accountDAO;
+        private readonly IAccountDAL _accountDAO;
 
-        public AccountController(IAccountDAO accountDAO)
+        public AccountController(IAccountDAL accountDAO)
         {
             _accountDAO = accountDAO;
         }
@@ -29,28 +28,26 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(User user)
+        public async Task<IActionResult> Login(Users user)
         {
-            if (!ModelState.IsValid) { return View(); }
-
-            if (LoginSucess(user.UserName, user.Password))
+            user = TryLogin(user.UserName, user.Password);
+            if (!ModelState.IsValid || user is null) { return Redirect("/"); }
+            List<Claim> claims = new()
             {
-                List<Claim> claims = new()
-                {
-                    new Claim(ClaimTypes.Name,user.UserName),
-                    new Claim(ClaimTypes.Email,"Test@test.com")
-                };
-                ClaimsIdentity identity = new(claims, "Cookie");
-                ClaimsPrincipal principal = new(identity);
+                new Claim(ClaimTypes.Sid, user.UserID.ToString()),
+                new Claim(ClaimTypes.NameIdentifier,user.UserName),
+                new Claim(ClaimTypes.Name,user.FirstName+' '+user.LastName),
+                new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.Role,((UserRole)user.UserRoleId).ToString())
+            };
+            ClaimsIdentity identity = new(claims, "Cookie");
+            ClaimsPrincipal principal = new(identity);
 
-                await HttpContext.SignInAsync(principal);
-                return Redirect("/");
-            }
-
-            return View();
+            await HttpContext.SignInAsync(principal);
+            return RedirectToAction("ChooseQuizCategory", "Quiz");
         }
 
-        private bool LoginSucess(string username, string password)
+        private Users TryLogin(string username, string password)
         {
             return _accountDAO.Login(username, password);
         }
@@ -71,13 +68,14 @@
         [HttpPost]
         public IActionResult Register(UserRegisterModel user)
         {
-            if (!ModelState.IsValid) { Redirect("/Home/Index"); }
+            if (!ModelState.IsValid) { _ = Redirect("/Home/Index"); }
             if (user == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
             user.UserRoleId = (int)UserRole.User;
             try
             {
                 _accountDAO.CreateUser(user);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel
                 {
