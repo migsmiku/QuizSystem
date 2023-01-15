@@ -1,0 +1,121 @@
+﻿@model QuizViewModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<script>
+    $(document).ready(function () {
+        var currentQuestionIndex = $("#currentQuestionIndex").val();
+        var totalQuestions = @Model.Questions.Count;
+
+        setAnsweredQuestions();
+
+        checkCurrentQuestionIndex(currentQuestionIndex)
+
+        var selectedValues = JSON.parse(localStorage.getItem("selectedValues")) || [];
+
+        $('input[type="radio"]').on('change', function () {
+            if ($(this).prop('checked')) {
+                selectedValues.push($(this).val());
+            } else {
+                var index = selectedValues.indexOf($(this).val());
+                selectedValues.splice(index, 1);
+            }
+            localStorage.setItem("selectedValues", JSON.stringify(selectedValues));
+        });
+
+        if (selectedValues != null) {
+            $('input[type="radio"]').each(function () {
+                if (selectedValues.includes($(this).val())) {
+                    $(this).prop('checked', true);
+                }
+            });
+        }
+
+
+
+        $("#previous-button").click(function () {
+            var currentQuestionIndex = $("#currentQuestionIndex").val();
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                $("#currentQuestionIndex").val(currentQuestionIndex);
+                $("#question" + currentQuestionIndex).show();
+                $("#question" + (currentQuestionIndex + 1)).hide();
+            }
+            checkCurrentQuestionIndex(currentQuestionIndex)
+
+            setAnsweredQuestions();
+        });
+
+        $("#next-button").click(function () {
+            var currentQuestionIndex = $("#currentQuestionIndex").val();
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                $("#currentQuestionIndex").val(currentQuestionIndex);
+                $("#question" + currentQuestionIndex).show();
+                $("#question" + (currentQuestionIndex - 1)).hide();
+            }
+            checkCurrentQuestionIndex(currentQuestionIndex)
+
+            setAnsweredQuestions();
+        });
+
+        $("#quizForm").submit(function (e) {
+            localStorage.clear();
+            var answeredQuestions = $("input[type='radio']:checked").length;
+            if (answeredQuestions < totalQuestions) {
+                if (!confirm("You have unanswered questions. Are you sure you want to submit?")) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        $(".nav-link").click(function (e) {
+            e.preventDefault();
+
+            var questionId = $(this).attr("href");
+            var currentQuestionIndex = questionId.substring(9);
+
+            $("#currentQuestionIndex").val(currentQuestionIndex);
+
+            checkCurrentQuestionIndex(currentQuestionIndex)
+            setAnsweredQuestions();
+
+            $("[id^=question]").hide();
+
+            $(questionId).show();
+        });
+
+        function setAnsweredQuestions() {
+            var totalQuestions = $("#totalQuestions").val();
+            for (var i = 0; i < totalQuestions; i++) {
+                var radioButtons = $("input[name=selectedOptionId_" + i + "]");
+                var selected = false;
+                radioButtons.each(function () {
+                    if (this.checked) {
+                        selected = true;
+                        return false;
+                    }
+                });
+                if (selected) {
+                    $("#Navquestion" + i).addClass("answered");
+                } else {
+                    $("#Navquestion" + i).addClass("unanswered");
+                }
+            }
+        }
+
+        function checkCurrentQuestionIndex(currentQuestionIndex) {
+            if (currentQuestionIndex == 0) {
+                $("#previous-button").hide();
+            } else {
+                $("#previous-button").show();
+            }
+
+            if (currentQuestionIndex == totalQuestions - 1) {
+                $("#next-button").hide();
+            } else {
+                $("#next-button").show();
+            }
+        }
+    });
+</script>

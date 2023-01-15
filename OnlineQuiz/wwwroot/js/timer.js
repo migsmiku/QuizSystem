@@ -29,6 +29,6 @@ var x = setInterval(function () {
     }
 }, 1000);
 
-function resetTimer() {
+function resetLocalStorage() {
     localStorage.clear();
 }
