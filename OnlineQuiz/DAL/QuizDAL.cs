@@ -313,5 +313,48 @@
             return null;
         }
 
+        public void SubmitQuiz(int? quizId, int userId, List<QuizQuestions> quizQuestions, DateTime endTime)
+        {
+
+            using (TransactionScope scope = new())
+            {
+                using (SqlConnection conn = Connection)
+                {
+                    conn.Open();
+                    string updateSql = "UPDATE quizQuestions SET SelectedOptionId = @SelectedOptionId WHERE QuestionId = @QuestionId";
+                    using (SqlCommand command = new SqlCommand(updateSql, conn))
+                    {
+                        command.Parameters.Add("@SelectedOptionId", SqlDbType.Int);
+                        command.Parameters.Add("@QuestionId", SqlDbType.Int);
+                        foreach (QuizQuestions quizQuestion in quizQuestions)
+                        {
+                            command.Parameters["@QuestionId"].Value = quizQuestion.QuestionId;
+                            command.Parameters["@SelectedOptionId"].Value = quizQuestion.SelectedOptionId;
+                            command.ExecuteNonQuery();
+                        }
+                    }
+
+                    using (SqlCommand command = new SqlCommand(@"
+                    UPDATE QuizSubmissions
+                    SET EndTime = @EndTime,
+	                    Score = (
+		                    SELECT count(1) AS score
+		                    FROM QuizQuestions QQ
+		                    INNER JOIN Options O ON O.OptionID = QQ.SelectedOptionId
+			                    AND O.IsCorrect = 1
+		                    WHERE QuizID = @QuizID
+		                    )
+                    WHERE QuizID = @QuizID
+	                    AND UserID = @UserID", conn))
+                    {
+                        command.Parameters.Add("@QuizID", SqlDbType.Int).Value = quizId;
+                        command.Parameters.Add("@EndTime", SqlDbType.DateTime).Value = endTime;
+                        command.Parameters.Add("@UserID", SqlDbType.Int).Value = userId;
+                        command.ExecuteNonQuery();
+                    }
+                    scope.Complete();
+                }
+            }
+        }
     }
 }

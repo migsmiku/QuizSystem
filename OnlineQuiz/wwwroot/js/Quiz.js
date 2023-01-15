@@ -21,7 +21,7 @@ var x = setInterval(function () {
         clearInterval(x);
         alert("Time's up!");
         resetTimer();
-        //document.getElementById("quizForm").submit();
+        document.getElementById("quizForm").submit();
     }
 }, 1000);
 

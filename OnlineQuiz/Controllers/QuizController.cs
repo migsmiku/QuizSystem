@@ -49,7 +49,27 @@
         [HttpPost]
         public ActionResult SubmitQuiz(IFormCollection form)
         {
-            return View();
+            if (form == null)
+            {
+                return Redirect("/");
+            }
+
+            int? quizId = HttpContext.Session.GetInt32("quizId");
+            var quizQuestions = new List<QuizQuestions>();
+            for(var i = 0; i < Convert.ToInt32(form["totalQuestions"]); i++)
+            {
+                quizQuestions.Add(new QuizQuestions()
+                {
+                    QuizId= quizId.HasValue?quizId.Value:0,
+                    QuestionId = Convert.ToInt32(form[$"Questions[{i}].QuestionId"]),
+                    SelectedOptionId = Convert.ToInt32(form[$"selectedOptionId_{i}"]),
+                });
+            }
+            var EndTime = DateTime.Now;
+            var userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Sid)?.Value);
+            _quizDao.SubmitQuiz(quizId, userId, quizQuestions, EndTime);
+            var quizViewModel = _quizDao.GetQuizViewModel(quizId);
+            return View(quizViewModel);
         }
     }
 }

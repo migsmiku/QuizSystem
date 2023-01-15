@@ -6,10 +6,11 @@
 
 <h1>Choose Quiz Category</h1>
 
+<ul class="list-group">
 @foreach(var quizCategory in Model)
 {
-    <li>
-        <a asp-controller="Quiz" asp-action="StartQuiz" asp-route-quizCategoryId="@quizCategory.QuizCategoryId" asp-route-quizCategoryName="@quizCategory.QuizCategoryName">Start @quizCategory.QuizCategoryName Quiz</a>
-
+    <li class="list-group-item">
+        <a class="btn btn-primary" asp-controller="Quiz" asp-action="StartQuiz" asp-route-quizCategoryId="@quizCategory.QuizCategoryId" asp-route-quizCategoryName="@quizCategory.QuizCategoryName">Start @quizCategory.QuizCategoryName Quiz</a>
     </li>
 }
+</ul>
