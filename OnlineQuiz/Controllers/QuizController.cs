@@ -83,7 +83,7 @@
             _quizDao.SubmitQuiz(quizId, userId, quizQuestions, EndTime);
 
             HttpContext.Session.Clear();
-            return RedirectToAction("SubmitQuiz","Quiz", quizId);
+            return RedirectToAction("SubmitQuiz","Quiz", new { quizId = quizId });
         }
     }
 }
