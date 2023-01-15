@@ -9,7 +9,7 @@
 <ul class="list-group">
 @foreach(var quizCategory in Model)
 {
-    <li class="list-group-item">
+    <li class="list-group-item border-0">
         <a class="btn btn-primary" asp-controller="Quiz" asp-action="StartQuiz" asp-route-quizCategoryId="@quizCategory.QuizCategoryId" asp-route-quizCategoryName="@quizCategory.QuizCategoryName">Start @quizCategory.QuizCategoryName Quiz</a>
     </li>
 }

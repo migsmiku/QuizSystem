@@ -1,7 +1,7 @@
 ﻿@model OnlineQuiz.Models.QuizViewModel
 
 <div>
-    <h4>QuizViewModel</h4>
+    <h4>Quiz Result</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -11,25 +11,41 @@
             @Html.DisplayFor(model => model.QuizName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserId)
+            @Html.DisplayNameFor(model => model.UserName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserId)
+            @Html.DisplayFor(model => model.UserName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CurrentQuestionIndex)
+            @Html.DisplayNameFor(model => model.QuizSubmissions.StartTime)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CurrentQuestionIndex)
+            @Html.DisplayFor(model => model.QuizSubmissions.StartTime)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.QuizName)
+            @Html.DisplayNameFor(model => model.QuizSubmissions.EndTime)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.QuizName)
+            @Html.DisplayFor(model => model.QuizSubmissions.EndTime)
+        </dd>
+        @for(var i = 0; i < Model.QuizQuestions.Count;i++)
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayName($"Quesiton{i+1}")
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.Options.Where(o=>o.OptionId==Model.QuizQuestions[i].SelectedOptionId).FirstOrDefault()?.IsCorrect == true?"Correct":"Wrong")
+            </dd>
+        }
+        <dt class="col-sm-2">
+            @Html.DisplayName("Result")
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.QuizSubmissions.Score >= 6 ? "Pass" : "Fail")
         </dd>
     </dl>
 </div>
 <div>
+    @Html.ActionLink("Take Another Quiz","ChooseQuizCategory","Quiz",new{quizId = Model.QuizId})
     <a asp-action="Index">Back to List</a>
 </div>

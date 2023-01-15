@@ -15,7 +15,7 @@
 
         checkCurrentQuestionIndex(currentQuestionIndex)
 
-        var selectedValues = [];
+        var selectedValues = JSON.parse(localStorage.getItem("selectedValues")) || [];
 
         $('input[type="radio"]').on('change', function () {
             if ($(this).prop('checked')) {
@@ -26,15 +26,15 @@
             }
             localStorage.setItem("selectedValues", JSON.stringify(selectedValues));
         });
-
-        var selectedValues = JSON.parse(localStorage.getItem("selectedValues"));
         
-        $('input[type="radio"]').each(function () {
-            if (selectedValues.includes($(this).val())) {
-                $(this).prop('checked', true);
-            }
-        });
-            
+        if(selectedValues !=null){
+            $('input[type="radio"]').each(function () {
+                if (selectedValues.includes($(this).val())) {
+                    $(this).prop('checked', true);
+                }
+            }); 
+        }
+           
 
 
         $("#previous-button").click(function () {
@@ -132,6 +132,7 @@
 <h1 class="accordion-header">@Model.QuizName</h1>
 
 <form id="quizForm" action="submitquiz" method="post" class="form-control">
+    
     <div class="d-flex justify-content-center">
         <div class="nav nav-pills">
             @for (int i = 0; i < Model.Questions.Count; i++)
@@ -178,5 +179,5 @@
             class="btn btn-outline-warning ml-auto">Submit</button>
     </div>
 
-
+    <div>@Html.AntiForgeryToken()</div>
 </form>
