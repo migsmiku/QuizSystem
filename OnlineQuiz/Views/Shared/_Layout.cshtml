@@ -38,7 +38,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactUs">ContactUs</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item m-lg-auto m-md-auto m-sm-auto">
                             @if (User.Identity is not null && User.Identity.IsAuthenticated)
                             {
                                 <a class="nav-link text-dark" method="post" asp-action="Logout" asp-controller="Account">Logout</a>
