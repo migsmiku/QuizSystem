@@ -28,21 +28,57 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.QuizSubmissions.EndTime)
         </dd>
-        @for(var i = 0; i < Model.QuizQuestions.Count;i++)
-        {
-            <dt class="col-sm-2">
-                @Html.DisplayName($"Quesiton{i+1}")
-            </dt>
-            <dd class="col-sm-10">
-                @(Model.Options.Where(o=>o.OptionId==Model.QuizQuestions[i].SelectedOptionId).FirstOrDefault()?.IsCorrect == true?"Correct":"Wrong")
-            </dd>
-        }
         <dt class="col-sm-2">
             @Html.DisplayName("Result")
         </dt>
         <dd class="col-sm-10">
             @(Model.QuizSubmissions.Score >= 6 ? "Pass" : "Fail")
         </dd>
+        @for (var i = 0; i < Model.QuizQuestions.Count; i++)
+        {
+            @*   <dt class="col-sm-2">
+                @Html.DisplayName($"Quesiton{i+1}")
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.Options.Where(o=>o.OptionId==Model.QuizQuestions[i].SelectedOptionId).FirstOrDefault()?.IsCorrect == true?"Correct":"Wrong")
+            </dd>*@
+            var displayQuestion = Model.Questions.Where(x => x.QuestionId == Model.QuizQuestions[i].QuestionId).FirstOrDefault();
+            
+
+            <div id="question@(i)">
+                    <h4>Question @(i + 1)</h4>
+                    <hr />
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <p>@(i + 1). @displayQuestion.QuestionText</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <p class="text-danger">@(Model.QuizQuestions[i].SelectedOptionId==0?"Not Answered":"")</p>
+                            </div>
+                        </div>
+                @foreach (var option in Model.Options.Where(x => x.QuestionId == displayQuestion.QuestionId))
+                {
+                            <dl class="row" style="display: flex; flex-wrap: nowrap;">
+                                <dd class="col-sm-9 float-left">
+                                    <input type="radio" name="selectedOptionId_@(i)" value="@option.OptionId"
+                           id="option@(option.OptionId)" 
+                           @(option.OptionId==Model.QuizQuestions[i].SelectedOptionId?"checked":"")>
+                                        <label for="option@(option.OptionId)">@option.OptionText</label>
+                                </dd>
+                        @if(option.OptionId == Model.QuizQuestions[i].SelectedOptionId)
+                        {
+                            <dd class="align-self-auto">
+                                <span class="@(option.IsCorrect ? "text-success" : "text-danger")">
+                                    @(option.IsCorrect ? "Correct" : "Wrong")
+                                </span>
+                            </dd>
+                        }
+
+                    </dl>
+                }
+
+            </div>
+        }        
     </dl>
 </div>
 <div>
