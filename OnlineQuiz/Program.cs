@@ -26,6 +26,7 @@ builder.Services.AddSingleton<IConfiguration>(config);
 
 builder.Services.AddScoped<IAccountDAL, AccountDAL>();
 builder.Services.AddScoped<IQuizDAL, QuizDAL>();
+builder.Services.AddScoped<IFeedbackDAL, FeedbackDAL>();
 
 WebApplication app = builder.Build();
 

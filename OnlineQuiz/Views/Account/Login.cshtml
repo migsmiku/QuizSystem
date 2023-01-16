@@ -4,7 +4,7 @@
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
+<h1 class="d-flex justify-content-center">Login</h1>
 @if (User.Identity is not null && User.Identity.IsAuthenticated)
 {
     <p>You have already login!</p>
@@ -12,25 +12,35 @@
 else
 {
     <hr />
-    <div class="row">
-        <div class="col-md-4">
-            <form method="post" asp-action="Login" class="form-control">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="UserName" class="control-label"></label>
-                    <input asp-for="UserName" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Password" class="control-label"></label>
-                    <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <div class="d-flex">
-                    <input type="submit" value="Login" class="btn-primary">
-                    <input type="submit" value="Register" asp-asp-controller="Account" asp-action="Register" class="btn-primary" formmethod="get">
-                </div>
-            </form>
+    <div class="container">
+        <div class="row justify-content-around">
+            <div class="col-sm-6">
+                <form method="post" asp-action="Login" class="form-control mx-auto w-75">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group row my-3">
+                        <div class="col-sm-3 my-3">
+                            <label asp-for="UserName" class="control-label justify-content-end"></label>
+                        </div>
+                        <div class="col-sm-9 my-3">
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row my-3">
+                        <div class="col-sm-3 my-3">
+                            <label asp-for="Password" class="control-label"></label>
+                        </div>
+                        <div class="col-sm-9 my-3">
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>    
+                    </div>
+                    <div class="d-flex my-3">
+                        <input type="submit" value="Login" class="btn-primary mx-auto">
+                        <input type="submit" value="Register" asp-asp-controller="Account" asp-action="Register" class="btn-primary mx-auto" formmethod="get">
+                    </div>
+                </form>
+            </div>            
         </div>
     </div>
 }

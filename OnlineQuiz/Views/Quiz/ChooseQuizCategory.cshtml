@@ -4,13 +4,15 @@
     ViewData["Title"] = "ChooseQuizCategory";
 }
 
-<h1>Choose Quiz Category</h1>
+<div class="container">
+    <h1 class="text-center mb-5">Choose Quiz Category</h1>
 
-<ul class="list-group">
-@foreach(var quizCategory in Model)
-{
-    <li class="list-group-item border-0">
-        <a class="btn btn-primary" asp-controller="Quiz" asp-action="StartQuiz" asp-route-quizCategoryId="@quizCategory.QuizCategoryId" asp-route-quizCategoryName="@quizCategory.QuizCategoryName">Start @quizCategory.QuizCategoryName Quiz</a>
-    </li>
-}
-</ul>
+    <ul class="card-columns">
+    @foreach(var quizCategory in Model)
+    {
+        <li class="list-group-item border-0">
+            <a class="btn btn-primary" asp-controller="Quiz" asp-action="StartQuiz" asp-route-quizCategoryId="@quizCategory.QuizCategoryId" asp-route-quizCategoryName="@quizCategory.QuizCategoryName">Start @quizCategory.QuizCategoryName Quiz</a>
+        </li>
+    }
+    </ul>
+</div>

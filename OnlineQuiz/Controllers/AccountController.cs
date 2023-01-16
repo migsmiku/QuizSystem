@@ -30,7 +30,7 @@
         [HttpPost]
         public async Task<IActionResult> Login(Users user)
         {
-            user = TryLogin(user.UserName, user.Password);
+            user = _accountDAO.Login(user.UserName, user.Password);
             if (!ModelState.IsValid || user is null) { return Redirect("/"); }
             List<Claim> claims = new()
             {
@@ -45,11 +45,6 @@
 
             await HttpContext.SignInAsync(principal);
             return RedirectToAction("ChooseQuizCategory", "Quiz");
-        }
-
-        private Users TryLogin(string username, string password)
-        {
-            return _accountDAO.Login(username, password);
         }
 
         [Route("Logout")]

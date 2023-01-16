@@ -1,0 +1,41 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<script>
+    $(document).ready(function () {
+        $('.fa-star').on('mouseover', function () {
+             let currentRating = $(this).data('rating');
+            $('.fa-star').removeClass('text-warning');
+            $('.fa-star[data-rating="' + currentRating + '"]').prevAll().addBack().addClass('text-warning');
+        });
+        $('.fa-star').on('mouseout', function () {
+            $('.fa-star').each(function() {
+                if($(this).attr('data-selected') !== 'true') {
+                    $(this).removeClass('text-warning');
+                } else {
+                    $(this).addClass('text-warning');
+                }
+            });
+        });
+        $('.fa-star').on('click', function () {
+            let selectedRating = $(this).data('rating');
+            $('#selected-rating').val(selectedRating);
+            $('.fa-star').each(function(index) {
+                if(index < selectedRating) {
+                    $(this).attr('data-selected', 'true');
+                } else {
+                    $(this).attr('data-selected', 'false');
+                }
+            });
+            $('.fa-star[data-selected="true"]').addClass('text-warning');
+        });
+
+        $("form").submit(function(event) {
+            let selectedRating = $('#selected-rating').val();
+            if(selectedRating === undefined || parseInt(selectedRating) === 0){
+                alert("Please select a rating");
+                event.preventDefault();
+            }
+        });
+    });
+</script>

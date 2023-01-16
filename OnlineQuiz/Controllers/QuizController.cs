@@ -54,7 +54,7 @@
         {
             var quizViewModel = _quizDao.GetQuizViewModel(quizId);
             quizViewModel.UserName = User.FindFirst(ClaimTypes.Name)?.Value;
-            _ = quizViewModel.Questions.OrderBy(x => x.QuestionId);
+            if(quizViewModel is not null) _ = quizViewModel.Questions.OrderBy(x => x.QuestionId);
             return View("SubmitQuiz", quizViewModel);
         }
 
