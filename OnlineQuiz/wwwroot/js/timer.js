@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var current = new Date().getTime();
         var expire = sessionStorage.getItem("expire");
         var retrievedValue = parseInt(localStorage.getItem("countDownDate"));
-        countDownDate = !isNaN(retrievedValue) && current > expire ? retrievedValue : new Date().getTime() + 9000;
+        countDownDate = !isNaN(retrievedValue) && current > expire ? retrievedValue : new Date().getTime() + 900000;
     } else {
-        var countTime = new Date().getTime() + 9000;
+        var countTime = new Date().getTime() + 900000;
         sessionStorage.setItem("expire", countTime);
         countDownDate = countTime;
     }
