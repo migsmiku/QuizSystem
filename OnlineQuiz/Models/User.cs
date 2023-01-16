@@ -20,10 +20,11 @@
         public int UserRoleId { get; set; }
 
         [Required]
-        [Display(Name = "User Name")]
+        [Display(Name = "UserName:")]
         public string? UserName { get; set; }
 
         [Required]
+        [Display(Name = "Password:")]
         public string? Password { get; set; }
     }
 }

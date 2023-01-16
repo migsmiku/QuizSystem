@@ -1,11 +1,13 @@
 ﻿namespace OnlineQuiz.Controllers
 {
     using System.Security.Claims;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using OnlineQuiz.DAL;
     using OnlineQuiz.Models;
 
+    [Authorize]
     public class QuizController : Controller
     {
         private readonly IQuizDAL _quizDao;
@@ -30,12 +32,13 @@
                 string quizName = quizCategoryName + " for " + User.FindFirst(ClaimTypes.Name)?.Value;
                 int userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Sid)?.Value);
                 quizViewModel = _quizDao.CreateQuiz(quizCategoryId, quizName, userId);
-                _ = quizViewModel.Questions.OrderBy(x => x);
+                _ = quizViewModel.Questions.OrderBy(x => x.QuestionId);
                 HttpContext.Session.SetInt32("quizId", quizViewModel.QuizId);
             }
             else
             {
                 quizViewModel = _quizDao.GetQuizViewModel(quizId);
+                _ = quizViewModel.Questions.OrderBy(x => x.QuestionId);
             }
 
             return View(quizViewModel);
@@ -46,7 +49,17 @@
             return Redirect("/");
         }
 
+        [HttpGet]
+        public ActionResult SubmitQuiz(int quizId)
+        {
+            var quizViewModel = _quizDao.GetQuizViewModel(quizId);
+            quizViewModel.UserName = User.FindFirst(ClaimTypes.Name)?.Value;
+            if(quizViewModel is not null) _ = quizViewModel.Questions.OrderBy(x => x.QuestionId);
+            return View("SubmitQuiz", quizViewModel);
+        }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult SubmitQuiz(IFormCollection form)
         {
             if (form == null)
@@ -68,8 +81,9 @@
             var EndTime = DateTime.Now;
             var userId = Convert.ToInt32(User.FindFirst(ClaimTypes.Sid)?.Value);
             _quizDao.SubmitQuiz(quizId, userId, quizQuestions, EndTime);
-            var quizViewModel = _quizDao.GetQuizViewModel(quizId);
-            return View(quizViewModel);
+
+            HttpContext.Session.Clear();
+            return RedirectToAction("SubmitQuiz","Quiz", new { quizId = quizId });
         }
     }
 }
