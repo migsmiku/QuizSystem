@@ -1,4 +1,4 @@
-﻿var countDownDate; // 15 minutes in milliseconds
+﻿let countDownDate; // 15 minutes in milliseconds
 
 if (localStorage.getItem("countDownDate")) {
     var current = new Date().getTime();
