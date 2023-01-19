@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using OnlineQuiz.DAL;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,11 @@ builder.Services.AddAuthentication("Cookie").AddCookie("Cookie", options =>
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireClaim("Admin", "True"));
+});
 //add session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
@@ -23,6 +29,9 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
 builder.Services.AddSingleton<IConfiguration>(config);
+
+builder.Services.AddDbContext<IQuizDbContext,QuizDbContext>(option =>
+    option.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddScoped<IAccountDAL, AccountDAL>();
 builder.Services.AddScoped<IQuizDAL, QuizDAL>();

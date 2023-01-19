@@ -38,7 +38,8 @@
                 new Claim(ClaimTypes.NameIdentifier,user.UserName),
                 new Claim(ClaimTypes.Name,user.FirstName+' '+user.LastName),
                 new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.Role,((UserRole)user.UserRoleId).ToString())
+                new Claim(ClaimTypes.Role,((UserRole)user.UserRoleId).ToString()),
+                new Claim("Admin",(user.UserRoleId == 1).ToString())
             };
             ClaimsIdentity identity = new(claims, "Cookie");
             ClaimsPrincipal principal = new(identity);
