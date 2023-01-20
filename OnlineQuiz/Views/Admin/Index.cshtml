@@ -1,0 +1,20 @@
+﻿@model AdminViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <h1 class="text-center mb-5">Choose your action</h1>
+
+    <ul class="card-columns">
+        <li class="list-group-item border-0">
+            <a class="btn btn-primary" asp-controller="Admin" asp-action="ViewQuizResult">View quiz result</a>
+        </li>
+        <li class="list-group-item border-0">
+            <a class="btn btn-primary" asp-controller="Admin" asp-action="ViewUserProfile">View user profile</a>
+        </li>
+        <li class="list-group-item border-0">
+            <a class="btn btn-primary" asp-controller="Admin" asp-action="EditQuestions">Edit questions</a>
+        </li>
+    </ul>
+</div>

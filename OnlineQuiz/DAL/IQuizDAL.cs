@@ -7,7 +7,7 @@
     public interface IQuizDAL
     {
         QuizViewModel CreateQuiz(int quizCategoryId, string? userId, int userId1);
-        IEnumerable<QuizCategory> GetQuizCategory();
+        IEnumerable<QuizCategories> GetQuizCategory();
         QuizViewModel GetQuizViewModel(int? quizId);
         void SubmitQuiz(int? quizId, int userId, List<QuizQuestions> quizQuestions, DateTime endTime);
     }

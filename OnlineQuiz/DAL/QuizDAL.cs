@@ -97,10 +97,10 @@
                     quizViewModel.QuizQuestions = quizQuestions;
                 }
 
-                using (SqlCommand command = new("INSERT INTO QuizSubmissions (QuizID, UserID, StartTime, Score, CreatedDate) OUTPUT INSERTED.QuizSubmissionID VALUES (@QuizID, @UserID, @StartTime, @Score, @CreatedDate)", conn))
+                using (SqlCommand command = new("INSERT INTO QuizSubmissions (QuizId, UserID, StartTime, Score, CreatedDate) OUTPUT INSERTED.QuizSubmissionID VALUES (@QuizId, @UserID, @StartTime, @Score, @CreatedDate)", conn))
                 {
                     DateTime current = DateTime.Now;
-                    _ = command.Parameters.AddWithValue("@QuizID", quizViewModel.QuizId);
+                    _ = command.Parameters.AddWithValue("@QuizId", quizViewModel.QuizId);
                     _ = command.Parameters.AddWithValue("@UserID", quizViewModel.UserId);
                     _ = command.Parameters.AddWithValue("@StartTime", current);
                     _ = command.Parameters.AddWithValue("@Score", 0);
@@ -143,16 +143,16 @@
             transactionScope.Complete();
         }
 
-        public IEnumerable<QuizCategory> GetQuizCategory()
+        public IEnumerable<QuizCategories> GetQuizCategory()
         {
             using SqlConnection conn = Connection;
             conn.Open();
             SqlCommand command = new("SELECT * FROM QuizCategories", conn);
             using SqlDataReader reader = command.ExecuteReader();
-            List<QuizCategory> quizCategories = new();
+            List<QuizCategories> quizCategories = new();
             while (reader.Read())
             {
-                QuizCategory quizCategory = new()
+                QuizCategories quizCategory = new()
                 {
                     QuizCategoryId = reader.GetInt32(0),
                     QuizCategoryName = reader.GetString(1)
@@ -169,7 +169,7 @@
             {
                 conn.Open();
 
-                using (SqlCommand command = new SqlCommand("SELECT * FROM Quizzes WHERE QuizID = @quizId", conn))
+                using (SqlCommand command = new SqlCommand("SELECT * FROM Quizzes WHERE QuizId = @quizId", conn))
                 {
                     command.Parameters.AddWithValue("@quizId", quizId);
                     using var reader = command.ExecuteReader();
@@ -234,7 +234,7 @@
 
         private QuizSubmissions? GetQuizSubmissionsById(int? quizId, SqlConnection conn)
         {
-            using (SqlCommand command = new("SELECT * FROM QuizSubmissions WHERE QuizID = @quizId", conn))
+            using (SqlCommand command = new("SELECT * FROM QuizSubmissions WHERE QuizId = @quizId", conn))
             {
                 command.Parameters.Add("@quizId", SqlDbType.Int).Value = quizId;
                 using SqlDataReader reader = command.ExecuteReader();
@@ -255,7 +255,7 @@
 
         private IList<Options> GetOptionsByQuizId(int? quizId, SqlConnection conn)
         {            
-            using (SqlCommand command = new("SELECT * FROM Options WHERE QuestionID IN (SELECT QuestionID FROM QuizQuestions WHERE QuizID = @quizId)", conn))
+            using (SqlCommand command = new("SELECT * FROM Options WHERE QuestionID IN (SELECT QuestionID FROM QuizQuestions WHERE QuizId = @quizId)", conn))
             {
                 command.Parameters.Add("@quizId", SqlDbType.Int).Value = quizId;
                 using SqlDataReader reader = command.ExecuteReader();
@@ -342,12 +342,12 @@
 		                    FROM QuizQuestions QQ
 		                    INNER JOIN Options O ON O.OptionID = QQ.SelectedOptionId
 			                    AND O.IsCorrect = 1
-		                    WHERE QuizID = @QuizID
+		                    WHERE QuizId = @QuizId
 		                    )
-                    WHERE QuizID = @QuizID
+                    WHERE QuizId = @QuizId
 	                    AND UserID = @UserID", conn))
                     {
-                        command.Parameters.Add("@QuizID", SqlDbType.Int).Value = quizId;
+                        command.Parameters.Add("@QuizId", SqlDbType.Int).Value = quizId;
                         command.Parameters.Add("@EndTime", SqlDbType.DateTime).Value = endTime;
                         command.Parameters.Add("@UserID", SqlDbType.Int).Value = userId;
                         command.ExecuteNonQuery();

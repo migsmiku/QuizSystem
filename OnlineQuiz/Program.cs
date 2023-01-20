@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineQuiz.DAL;
+using OnlineQuiz.DbContext;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,7 @@ IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.
 
 builder.Services.AddSingleton<IConfiguration>(config);
 
-builder.Services.AddDbContext<IQuizDbContext,QuizDbContext>(option =>
+builder.Services.AddDbContext<QuizDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddScoped<IAccountDAL, AccountDAL>();

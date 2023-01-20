@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Mvc;
     using OnlineQuiz.DAL;
     using OnlineQuiz.Models;
+    using OnlineQuiz.Models.Enum;
 
     public class AccountController : Controller
     {
@@ -39,7 +40,7 @@
                 new Claim(ClaimTypes.Name,user.FirstName+' '+user.LastName),
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.Role,((UserRole)user.UserRoleId).ToString()),
-                new Claim("Admin",(user.UserRoleId == 1).ToString())
+                new Claim("Admin",((UserRole)user.UserRoleId == UserRole.Admin).ToString())
             };
             ClaimsIdentity identity = new(claims, "Cookie");
             ClaimsPrincipal principal = new(identity);
