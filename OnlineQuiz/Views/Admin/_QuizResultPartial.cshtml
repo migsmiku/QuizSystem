@@ -1,0 +1,78 @@
+﻿@model AdminViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["title"] = "_QuizResultPartial";
+}
+<div id="data-container">
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                    @Html.DisplayName("Quiz finished date")
+            </th>
+            <th>
+                    @Html.DisplayName("Quiz category")
+            </th>
+            <th>
+                    @Html.DisplayName("User Name")
+            </th>
+            <th>
+                    @Html.DisplayName("Quiz question count")
+            </th>
+            <th>
+                    @Html.DisplayName("Quiz score")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var item in Model.QuizSubmissions)
+            {
+                <tr>
+                    <td>
+                        @(item.EndTime?.ToShortDateString() ?? "")
+                </td>
+                <td>
+                        @(((QuizCategory)(item.Quizzes.QuizCategoryId)).ToDescription())
+                </td>
+                <td>
+                        @Html.Display(item.Users.FirstName +" "+item.Users.LastName )
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Quizzes.QuizQuestions.Count)
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Score)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.QuizSubmissionId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.QuizSubmissionId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.QuizSubmissionId">Delete</a>
+                </td>
+            </tr>
+            }
+    </tbody>
+</table>
+<div class="pagination-controls">
+    <label>Page:</label>
+    <select id="page-selector" name ="page-selector" onchange="navigateToSelectedPage()">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == Model.PageNumber)
+                {
+                        <option value="@i" selected>@i</option>
+                }
+                else
+                {
+                        <option value="@i">@i</option>
+                }
+
+            }
+    </select>
+    <label>of @Model.TotalPages</label>
+    <button onclick="navigateToPreviousPage()" @(Model.PageNumber != 1 ? "" : "disabled")>Previous</button>
+    <button onclick="navigateToNextPage()" @(Model.PageNumber < Model.TotalPages ? "" : "disabled")>Next</button>
+ </div>
+</div>

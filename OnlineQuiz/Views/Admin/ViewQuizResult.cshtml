@@ -9,88 +9,14 @@
 <div class="container">
     <a class="btn btn-dark" asp-action="Index">Return</a>
 </div>
-<div id="data-container">
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayName("Quiz finished date")
-            </th>
-            <th>
-                @Html.DisplayName("Quiz category")
-            </th>
-            <th>
-                @Html.DisplayName("User Name")
-            </th>
-            <th>
-                @Html.DisplayName("Quiz question count")
-            </th>
-            <th>
-                @Html.DisplayName("Quiz score")
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.QuizSubmissions) {
-            <tr>
-                <td>
-                    @(item.EndTime?.ToShortDateString()??"")
-            </td>
-            <td>
-                   @(((QuizCategory)(item.Quizzes.QuizCategoryId)).ToDescription())
-            </td>
-            <td>
-                    @Html.Display(item.Users.FirstName +" "+item.Users.LastName )
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quizzes.QuizQuestions.Count)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Score)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.QuizSubmissionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.QuizSubmissionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.QuizSubmissionId">Delete</a>
-            </td>
-        </tr>
+@{
+    await Html.RenderPartialAsync("_QuizResultPartial", Model);
 }
-    </tbody>
-</table>
-</div>
-<div class="pagination-controls">
-    <label>Page:</label>
-    <select id="page-selector" name ="page-selector" onchange="navigateToSelectedPage()">
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            if(i == Model.PageNumber)
-            {
-                <option value="@i" selected>@i</option>
-            }
-            else
-            {
-                <option value="@i">@i</option>
-            }
-            
-        }
-    </select>
-    <label>of @Model.TotalPages</label>
-    <button onclick="navigateToPreviousPage()" @(Model.PageNumber != 1 ? "" : "disabled")>Previous</button>
-    <button onclick="navigateToNextPage()" @(Model.PageNumber < Model.TotalPages ? "" : "disabled")>Next</button>
- </div>
 <script>
-      function navigateToSelectedPage() {
+    function navigateToSelectedPage() {
         var pageNumber = $("#page-selector").val();
-        // navigate to the selected page
-    }
-    function navigateToPreviousPage() {
-    var pageNumber = $("#page-selector").val();
-    if (pageNumber > 1) {
-        pageNumber--;
-        $("#page-selector").val(pageNumber);
         $.ajax({
-            url: "/Admin/ViewQuizResult",
+            url: "/Admin/ViewQuizResults",
             data: { pageNumber: pageNumber },
             type: "GET",
             success: function (data) {
@@ -99,21 +25,37 @@
             }
         });
     }
-}
-    function navigateToNextPage() {
-    var pageNumber = $("#page-selector").val();
-    if (pageNumber < @Model.TotalPages) {
-        pageNumber++;
-        $("#page-selector").val(pageNumber);
-        // navigate to the next page
-        $.ajax({
-            url: "/Admin/ViewQuizResult/" + pageNumber,
-            type: "GET",
-            success: function (data) {
-                // update the view with the new data
-                $("#data-container").html(data);
-            }
-        });
+    function navigateToPreviousPage() {
+        var pageNumber = $("#page-selector").val();
+        if (pageNumber > 1) {
+            pageNumber--;
+            $("#page-selector").val(pageNumber);
+            $.ajax({
+                url: "/Admin/ViewQuizResults",
+                data: { pageNumber: pageNumber },
+                type: "GET",
+                success: function (data) {
+                    // update the view with the new data
+                    $("#data-container").html(data);
+                }
+            });
+        }
     }
-}
+    function navigateToNextPage() {
+        let pageNumber = $("#page-selector").val();
+        if (pageNumber < @Model.TotalPages) {
+            pageNumber++;
+            $("#page-selector").val(pageNumber);
+            // navigate to the next page
+            $.ajax({
+                url: "/Admin/ViewQuizResults",
+                type: "GET",
+                data: { pageNumber: pageNumber },
+                success: function (data) {
+                    // update the view with the new data
+                    $("#data-container").html(data);
+                }
+            });
+        }
+    }
 </script>

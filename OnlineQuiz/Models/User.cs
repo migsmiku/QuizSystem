@@ -32,6 +32,6 @@
         public string? Password { get; set; }
 
         [InverseProperty("Users")]
-        public virtual QuizSubmissions QuizSubmissions { get; set; }
+        public virtual QuizSubmissions? QuizSubmissions { get; set; }
     }
 }

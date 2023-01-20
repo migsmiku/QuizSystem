@@ -46,7 +46,7 @@
             ClaimsPrincipal principal = new(identity);
 
             await HttpContext.SignInAsync(principal);
-            return RedirectToAction("ChooseQuizCategory", "Quiz");
+            return (UserRole)user.UserRoleId == UserRole.Admin ? RedirectToAction("Index", "Admin") : RedirectToAction("ChooseQuizCategory", "Quiz");
         }
 
         [Route("Logout")]

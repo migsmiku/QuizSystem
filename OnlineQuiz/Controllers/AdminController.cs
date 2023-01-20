@@ -21,8 +21,7 @@
             return View();
         }
 
-        [HttpGet("ViewQuizResult")]
-        public IActionResult ViewQuizResults(int pageNumber = 1, int pageSize = 20)
+        public IActionResult ViewQuizResult(int pageNumber = 1, int pageSize = 20)
         {
             int totalRecords = _quizDbContext.QuizSubmissions.Count();
             int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
@@ -41,8 +40,8 @@
             return View(adminViewModel);
         }
 
-        [HttpGet("QuizResult/{pageNumber}")]
-        public IActionResult QuizResult(int pageNumber = 1, int pageSize = 20)
+        [HttpGet]
+        public IActionResult ViewQuizResults(int pageNumber, int pageSize = 20)
         {
             int totalRecords = _quizDbContext.QuizSubmissions.Count();
             int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
@@ -58,7 +57,7 @@
                                                                            .Skip((pageNumber - 1) * pageSize)
                                                                            .Take(pageSize)
             };
-            return View(adminViewModel);
+            return PartialView("_QuizResultPartial", adminViewModel);
         }
 
         public IActionResult ViewUserProfile()
