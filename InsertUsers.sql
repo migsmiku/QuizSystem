@@ -1,0 +1,22 @@
+USE quiz
+INSERT INTO Users (UserName, FirstName, LastName, Email, DateOfBirth, Password, UserRoleId, UserStatus, Phone, Address) VALUES
+('testuser1', 'Test', 'User1', 'testuser1@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5551', '123 Main St'),
+('testuser2', 'Test', 'User2', 'testuser2@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5552', '456 Park Ave'),
+('testuser3', 'Test', 'User3', 'testuser3@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5553', '789 Elm St'),
+('testuser4', 'Test', 'User4', 'testuser4@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5554', '321 Oak St'),
+('testuser5', 'Test', 'User5', 'testuser5@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5555', '654 Pine St'),
+('testuser6', 'Test', 'User6', 'testuser6@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5556', '987 Cedar St'),
+('testuser7', 'Test', 'User7', 'testuser7@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5557', '135 Birch St'),
+('testuser8', 'Test', 'User8', 'testuser8@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5558', '246 Maple St'),
+( 'testuser9', 'Test', 'User9', 'testuser9@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5559', '369 Willow St'),
+( 'testuser10', 'Test', 'User10', 'testuser10@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5560', '159 Oak St'),
+( 'testuser11', 'Test', 'User11', 'testuser11@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5561', '753 Pine St'),
+( 'testuser12', 'Test', 'User12', 'testuser12@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5562', '951 Cedar St'),
+( 'testuser13', 'Test', 'User13', 'testuser13@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5563', '753 Birch St'),
+( 'testuser14', 'Test', 'User14', 'testuser14@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5564', '369 Maple St'),
+( 'testuser15', 'Test', 'User15', 'testuser15@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5565', '159 Willow St'),
+( 'testuser16', 'Test', 'User16', 'testuser16@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5566', '753 Oak St'),
+( 'testuser17', 'Test', 'User17', 'testuser17@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5567', '951 Pine St'),
+( 'testuser18', 'Test', 'User18', 'testuser18@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5568', '753 Cedar St'),
+( 'testuser19', 'Test', 'User19', 'testuser19@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5569', '369 Birch St'),
+( 'testuser20', 'Test', 'User20', 'testuser20@example.com', '1995-05-01', 'testpassword', 2, 1, '555-555-5570', '159 Maple St');

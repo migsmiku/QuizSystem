@@ -101,6 +101,7 @@
             return View("_ViewUserProfilePartial",user);
         }
 
+        [Route("Admin/ViewAllUserProfile")]
         public IActionResult ViewAllUserProfile(int pageNumber = 1, int pageSize = 20)
         {
             var users = _quizDbContext.Users.AsNoTrackingWithIdentityResolution();
