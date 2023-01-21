@@ -36,7 +36,27 @@
         </dd>
     </dl>
 </div>
+<section id="question">
+    <h4>Question</h4>
+    <hr />
+    <div class="row">
+        <div class="col-sm-9">
+            <p>Model.QuestionText</p>
+        </div>
+    </div>
+    @foreach (var option in Model.Options)
+    {
+        <dl class="row" style="display: flex; flex-wrap: nowrap;">
+            <dd class="col-sm-9 float-left">
+                <input type="radio" name="optionId" value="@option.OptionId"
+                   id="option@(option.OptionId)" disabled />
+                <label for="option@(option.OptionId)">@option.OptionText</label>
+            </dd>
+        </dl>
+    }
+
+</section>
 <div>
-    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.QuestionId">Edit</a> |
+    <a class="btn btn-primary" asp-action="UpdateQuestionDetail" asp-route-QuestionId="@Model?.QuestionId">Edit</a>
     <a class="btn btn-danger" asp-action="EditQuestions">Back</a>
 </div>

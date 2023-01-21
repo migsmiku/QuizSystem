@@ -1,6 +1,7 @@
 ﻿namespace OnlineQuiz.Controllers
 {
     using System.Diagnostics;
+    using System.Transactions;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -121,6 +122,51 @@
                                                          .FirstOrDefaultAsync(x => x.QuestionId.Equals(questionId));
 
             return View(question);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateQuestionDetail(int questionId)
+        {
+            var question = await _quizDbContext.Questions.Include(x => x.Options)
+                                                         .FirstOrDefaultAsync(x => x.QuestionId.Equals(questionId));
+
+            return View(question);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuestionDetail(Questions question, IFormCollection form)
+        {
+            using(var transaction = await _quizDbContext.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    _quizDbContext.Questions.Update(question);
+                    await _quizDbContext.SaveChangesAsync();
+                    var options = new List<Options>();
+                    for (var i = 0; i < Convert.ToInt32(form["TotalOptionsCount"]); i++)
+                    {
+                        options.Add(new Options
+                        {
+                            OptionId = Convert.ToInt32(form[$"option[{i}].OptionId"]),
+                            QuestionId = question.QuestionId,
+                            OptionText = form[$"option[{i}].OptionText"],
+                            IsCorrect = form[$"IsCorrect{i}"] == "true"
+                        });
+                    }
+                    _quizDbContext.Options.UpdateRange(options);
+                    await _quizDbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+                
+            }
+            
+
+            return RedirectToAction("UpdateQuestionDetail", new {questionId = question.QuestionId});
         }
     }
 }

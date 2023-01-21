@@ -1,0 +1,132 @@
+﻿@model OnlineQuiz.Models.Questions
+
+@{
+    ViewData["Title"] = "UpdateQuestionDetail";
+}
+
+<h1>UpdateQuestionDetail</h1>
+
+<h4>Questions</h4>
+<hr />
+<div class="row">
+    <div class="d-flex">
+        <form asp-action="UpdateQuestionDetail">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="QuestionId" />
+            <input type="hidden" name="TotalOptionsCount" value="@Model.Options.Count" />
+            <div class="form-group">
+                <label asp-for="QuizCategoryId" class="control-label"></label>
+                <select asp-for="QuizCategoryId" class="form-control">
+                    @foreach (QuizCategory item in Enum.GetValues(typeof(QuizCategory)))
+                    {
+                        @if(Model.QuizCategoryId == (int)item)
+                        {
+                            <option value="@((int)item)"  selected> @item.ToDescription()</option>                            
+                        }else{
+                            <option value="@((int)item)"> @item.ToDescription()</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="QuizCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionText" class="control-label"></label>
+                <input asp-for="QuestionText" class="form-control" />
+                <span asp-validation-for="QuestionText" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionType" class="control-label"></label>
+                <input asp-for="QuestionType" class="form-control" />
+                <span asp-validation-for="QuestionType" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="QuestionStatus" /> @Html.DisplayName("IsActive")
+                </label>
+            </div>
+            @{var option = Model.Options.ToList();}
+            @for(var i= 0;i<Model.Options?.Count;i++)
+            {
+                <div class="option-container" id="optionContainer">
+                    <input type="hidden" asp-for="@option[i].OptionId" />
+                    <div class="form-group">
+                        <label asp-for="@option[i].OptionText" class="control-label"></label>
+                        <input asp-for="@option[i].OptionText" class="form-control" />
+                        <span asp-validation-for="@option[i].OptionText" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            @Html.DisplayNameFor(model => @option[i].IsCorrect) <input class="form-check-input" asp-for="@option[i].IsCorrect" name="IsCorrect@(i)" />
+                        </label>
+                    </div>
+                 </div>
+                <button class="remove-option-btn" type="button" onclick="" hidden>Remove</button>
+
+            }
+            <button id="addOptionBtn" type="button" onclick="" hidden>Add Option</button>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-action="EditQuestions">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<template id="optionTemplate">
+    <div class="form-group">
+        <label>Option Text:</label>
+        <input type="text" class="form-control option-text" name="OptionText" required>
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input type="checkbox" class="form-check-input option-is-correct" name="IsCorrect">Is Correct
+        </label>
+    </div>
+</template>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+    var nextOptionIndex=0;
+    nextOptionIndex = $("#optionContainer .option-container").length;
+
+    $("[name^='IsCorrect']").on("change", function () {
+        $("[name^='IsCorrect']").not(this).prop("checked", false);
+    });
+
+    $(document).on("click", ".remove-option-btn", function(){
+        console.log("remove");
+
+     $(this).closest(".option-container").remove();
+    nextOptionIndex--;
+    });
+    
+    $(document).on("click", "#addOptionBtn", function(){
+        console.log("add");
+
+       var newOption = $("#optionTemplate").clone();
+            console.log(newOption);
+            newOption.css({
+    "display": "block",
+    "visibility": "visible"
+});
+        newOption.find("input").each(function(){
+            var name = $(this).attr("name");
+            name = name.replace("_index_", nextOptionIndex);
+            $(this).attr("name", name);
+        });
+        newOption.find("label").each(function(){
+            var forAttr = $(this).attr("for");
+            forAttr = forAttr.replace("_index_", nextOptionIndex);
+            $(this).attr("for", forAttr);
+        });
+        newOption.insertAfter("#optionContainer .option-container:last");
+        nextOptionIndex++;
+    });
+});
+</script>
