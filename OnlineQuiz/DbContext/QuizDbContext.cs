@@ -23,6 +23,11 @@
                 .HasColumnName("UserStatus")
                 .HasColumnType("BIT");
 
+            modelBuilder.Entity<Questions>()
+                .Property(u => u.QuestionStatus)
+                .HasColumnName("QuestionStatus")
+                .HasColumnType("BIT");
+
             _ = modelBuilder.Entity<QuizQuestions>().HasKey(qq => new { qq.QuizId, qq.QuestionId });
 
             _ = modelBuilder.Entity<QuizQuestions>()

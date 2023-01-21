@@ -67,7 +67,7 @@
                         {
                             <a class="btn btn-danger" asp-action="ManageUserStatus" asp-route-UserID="@item.UserID" asp-route-Status="Suspended">Suspend</a>                            
                         }else{
-                            <a class="btn btn-primary" asp-action="ManageUserStatus" asp-route-UserID="@item.UserID" asp-route-Status="Active">Activate</a>
+                            <a class="btn btn-success" asp-action="ManageUserStatus" asp-route-UserID="@item.UserID" asp-route-Status="Active">Activate</a>
                         }
                     </td>
                 </tr>
@@ -75,6 +75,7 @@
         }
     </tbody>
 </table>
+
     <div class="d-flex flex-lg-row flex-md-row justify-content-between">
     <div class="pagination-controls">
         <button onclick="navigateToPreviousPage()" class="btn btn-primary" @(Model.PageNumber != 1 ? "" : "hidden")>Previous</button>

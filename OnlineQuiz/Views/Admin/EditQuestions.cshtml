@@ -1,0 +1,126 @@
+﻿@model AdminViewModel
+
+@{
+    ViewData["Title"] = "EditQuestions";
+}
+
+<h1>EditQuestions</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("QuizCategoryId")
+            </th>                 
+            <th>                  
+                @Html.DisplayName("QuestionText")
+            </th>                 
+            <th>                  
+                @Html.DisplayName("QuestionType")
+            </th>                 
+            <th>                  
+                @Html.DisplayName("CreatedDate")
+            </th>                 
+            <th>                  
+                @Html.DisplayName("QuestionStatus")
+            </th>
+            <th>
+                @Html.DisplayName("Actions")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model is not null && Model.Questions is not null)
+        {
+             @foreach (var item in Model.Questions) {
+            <tr>
+                <td>
+                        @(((QuizCategory)item.QuizCategoryId).ToDescription())
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuestionText)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuestionType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    @(item.QuestionStatus?"Active":"Inactive")
+                </td>
+                <td class="btn-group">
+                        <a class="btn btn-outline-primary" asp-action="Update" asp-route-QuestionId="@item.QuestionId">Update</a>
+                        <a class="btn btn-secondary" asp-action="GetQuestionDetail" asp-route-QuestionId="@item.QuestionId">Details</a>
+                        @if (item.QuestionStatus)
+                        {
+                            <a class="btn btn-danger" asp-action="UpdateQuestionStatus" asp-route-QuestionId="@item.QuestionId">Suspend</a>
+                        }else{
+                            <a class="btn btn-success" asp-action="UpdateQuestionStatus" asp-route-QuestionId="@item.QuestionId">Activate</a>
+                        }
+                </td>
+            </tr>
+        }       
+}
+    </tbody>
+</table>
+
+<div class="d-flex flex-lg-row flex-md-row justify-content-between">
+    <div class="pagination-controls">
+        <button onclick="navigateToPreviousPage()" class="btn btn-primary" @(Model.PageNumber != 1 ? "" : "hidden")>Previous</button>
+    </div>
+    <div class="pagination-controls">
+        <div class="d-flex flex-lg-row flex-md-row justify-content-around">
+            <div class="mx-auto my-auto mt-auto mb-auto">
+                <label>Page: </label>
+
+            </div>
+            <div class="mx-auto my-auto mt-auto mb-auto">
+                <select id="page-selector" name="page-selector" onchange="navigateToSelectedPage()" class="form-control align-content-center" style="height:auto">
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i == Model.PageNumber)
+                        {
+                            <option value="@i" selected>@i</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="mx-auto my-auto mt-auto mb-auto">
+                <label> of @Model.TotalPages</label>
+            </div>
+        </div>
+
+    </div>
+    <div class="pagination-controls">
+        <button onclick="navigateToNextPage()" class="btn btn-primary" @(Model.PageNumber < Model.TotalPages ? "" : "hidden")>Next</button>
+    </div>
+</div>
+
+<script>
+    function navigateToSelectedPage() {
+        var pageNumber = $("#page-selector").val();
+        window.location.href = "/Admin/EditQuestions?pageNumber=" + pageNumber;
+    }
+    function navigateToPreviousPage() {
+        var pageNumber = $("#page-selector").val();
+        if (pageNumber > 1) {
+            pageNumber--;
+            window.location.href = "/Admin/EditQuestions?pageNumber=" + pageNumber;
+        }
+    }
+    function navigateToNextPage() {
+        let pageNumber = $("#page-selector").val();
+        if (pageNumber < @Model.TotalPages) {
+            pageNumber++;
+            window.location.href = "/Admin/EditQuestions?pageNumber=" + pageNumber;
+        }
+    }
+</script>

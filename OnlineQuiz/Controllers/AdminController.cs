@@ -23,37 +23,19 @@
             return View();
         }
 
-        //[HttpGet("Admin/ViewQuizResult")]
-        //public IActionResult ViewQuizResult([FromQuery]int pageNumber = 1, int pageSize = 20)
-        //{
-        //    int totalRecords = _quizDbContext.QuizSubmissions.Count();
-        //    int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-        //    AdminViewModel adminViewModel = new()
-        //    {
-        //        TotalRecords = totalRecords,
-        //        TotalPages = totalPages,
-        //        PageNumber = pageNumber,
-        //        QuizSubmissions = _quizDbContext.QuizSubmissions.AsNoTracking()
-        //                                                                   .Include(x => x.Quizzes)
-        //                                                                   .ThenInclude(q => q.QuizQuestions)
-        //                                                                   .Include(u => u.Users).OrderByDescending(x => x.EndTime)
-        //                                                                   .Skip((pageNumber - 1) * pageSize)
-        //                                                                   .Take(pageSize)
-        //    };
-        //    return View(adminViewModel);
-        //}
-
-        //[HttpPost]
-        public IActionResult ViewQuizResult(IFormCollection form, string categoryFilter, string userFilter, int pageNumber = 1, int pageSize = 20)
+        public async Task<IActionResult> ViewQuizResult(IFormCollection form, string categoryFilter, string userFilter, int pageNumber = 1, int pageSize = 20)
         {
-            var quizSubmissions = _quizDbContext.QuizSubmissions.AsNoTracking()
-                                                                           .Include(x => x.Quizzes)
-                                                                           .ThenInclude(q => q.QuizQuestions)
-                                                                           .Where(x => categoryFilter == null || x.Quizzes.QuizCategories.QuizCategoryName == ((QuizCategory)Enum.Parse(typeof(QuizCategory), categoryFilter)).ToDescription())
-                                                                           .Include(u => u.Users)
-                                                                           .Where(u => userFilter == null || u.UserId == Convert.ToInt32(userFilter))
-                                                                           .OrderByDescending(x => x.EndTime);
-            int totalRecords = quizSubmissions.Count();
+            IQueryable<QuizSubmissions> quizSubmissions = _quizDbContext.QuizSubmissions.AsNoTracking()
+                                                                                        .Where(x => categoryFilter == null || x.Quizzes.QuizCategories.QuizCategoryName == ((QuizCategory)Enum.Parse(typeof(QuizCategory), categoryFilter)).ToDescription())
+                                                                                        .Where(u => userFilter == null || u.UserId == Convert.ToInt32(userFilter))
+                                                                                        .Include(x => x.Quizzes)
+                                                                                        .ThenInclude(q => q.QuizQuestions)
+                                                                                        .Include(u => u.Users)
+                                                                                        .AsQueryable()
+                                                                                        .OrderByDescending(x => x.EndTime);
+                                                                                        
+
+            int totalRecords = await quizSubmissions.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 
             AdminViewModel adminViewModel = new()
@@ -63,48 +45,26 @@
                 PageNumber = pageNumber,
                 CategoryFilter = categoryFilter,
                 UserFilter = userFilter,
-                QuizSubmissions= quizSubmissions.Skip((pageNumber - 1) * pageSize)
+                QuizSubmissions = quizSubmissions.Skip((pageNumber - 1) * pageSize)
                                                 .Take(pageSize)
             };
 
             return View(adminViewModel);
         }
 
-        //[HttpPost]
-        //public IActionResult ViewQuizResult(IFormCollection form)
-        //{
-        //    int pageNumber = 1;
-        //    int pageSize = 20;
-        //    pageNumber = int.Parse(form["page-selector"]);
-        //    int totalRecords = _quizDbContext.QuizSubmissions.Count();
-        //    int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-        //    AdminViewModel adminViewModel = new()
-        //    {
-        //        TotalRecords = totalRecords,
-        //        TotalPages = totalPages,
-        //        PageNumber = pageNumber,
-        //        QuizSubmissions = _quizDbContext.QuizSubmissions.AsNoTracking()
-        //                                                                   .Include(x => x.Quizzes)
-        //                                                                   .ThenInclude(q => q.QuizQuestions)
-        //                                                                   .Include(u => u.Users).OrderByDescending(x => x.EndTime)
-        //                                                                   .Skip((pageNumber - 1) * pageSize)
-        //                                                                   .Take(pageSize)
-        //    };
-        //    return View(adminViewModel);
-        //}
-
         [Route("Admin/ViewQuizResult/ViewUserProfile")]
-        public async Task<IActionResult> ViewUserProfile([FromQuery]int userId)
+        public async Task<IActionResult> ViewUserProfile([FromQuery] int userId)
         {
-            var user = await _quizDbContext.Users.SingleOrDefaultAsync(x=>x.UserID.Equals(userId));
-            if (user == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
-            return View("_ViewUserProfilePartial",user);
+            Users? user = await _quizDbContext.Users.SingleOrDefaultAsync(x => x.UserID.Equals(userId));
+            return user == null
+                ? View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier })
+                : (IActionResult)View("_ViewUserProfilePartial", user);
         }
 
         [Route("Admin/ViewAllUserProfile")]
         public IActionResult ViewAllUserProfile(int pageNumber = 1, int pageSize = 20)
         {
-            var users = _quizDbContext.Users.AsNoTrackingWithIdentityResolution();
+            IQueryable<Users> users = _quizDbContext.Users.AsNoTrackingWithIdentityResolution();
             if (users == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
             int totalRecords = users.Count();
             int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
@@ -113,23 +73,54 @@
                 TotalRecords = totalRecords,
                 TotalPages = totalPages,
                 PageNumber = pageNumber,
-                Users= users
+                Users = users.Skip((pageNumber - 1) * pageSize)
+                                                .Take(pageSize)
             };
-                        
+
             return View(adminViewModel);
         }
 
-        public async Task<ActionResult> ManageUserStatus(int userId, string status)
+        public async Task<IActionResult> ManageUserStatus(int userId, string status)
         {
-            var user = _quizDbContext.Users.Single(x => x.UserID == userId);
+            Users user = _quizDbContext.Users.Single(x => x.UserID == userId);
             user.UserStatus = status == "Active";
-            await _quizDbContext.SaveChangesAsync();
+            _ = await _quizDbContext.SaveChangesAsync();
             return RedirectToAction("ViewAllUserProfile");
         }
 
-        public IActionResult EditQuestions()
+        [Route("/Admin/EditQuestions")]
+        public async Task<IActionResult> EditQuestions(int pageNumber = 1, int pageSize = 20)
         {
-            return View();
+            var questions = _quizDbContext.Questions.AsNoTracking();
+            if (questions == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
+            int totalRecords = questions.Count();
+            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            AdminViewModel adminViewModel = new()
+            {
+                TotalRecords = totalRecords,
+                TotalPages = totalPages,
+                PageNumber = pageNumber,
+                Questions = await questions.Skip((pageNumber - 1) * pageSize)
+                                                .Take(pageSize).ToListAsync()
+            };
+            return View(adminViewModel);
+        }
+
+        public async Task<IActionResult> UpdateQuestionStatus(int questionId)
+        {
+            var question = await _quizDbContext.Questions.FirstOrDefaultAsync(x =>x.QuestionId.Equals(questionId));
+            question.QuestionStatus = !question.QuestionStatus;
+            await _quizDbContext.SaveChangesAsync();
+
+            return RedirectToAction("EditQuestions");
+        }
+
+        public async Task<IActionResult> GetQuestionDetail(int questionId)
+        {
+            var question = await _quizDbContext.Questions.Include(x => x.Options)
+                                                         .FirstOrDefaultAsync(x => x.QuestionId.Equals(questionId));
+
+            return View(question);
         }
     }
 }

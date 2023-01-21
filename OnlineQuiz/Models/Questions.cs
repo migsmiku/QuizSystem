@@ -12,6 +12,8 @@
         public int QuestionType { get; set; }
         public DateTime CreatedDate { get; set; }
 
+        public bool QuestionStatus { get; set; }
+
         public virtual ICollection<Options>? Options { get; set; }
 
         public virtual ICollection<QuizQuestions>? QuizQuestions { get; set; }

@@ -35,7 +35,7 @@
                     quizViewModel.QuizId = quizId;
                 }
 
-                using (SqlCommand command = new("SELECT TOP 10 Q.* FROM Questions Q Where QuizCategoryID = @QuizCategoryId ORDER BY NEWID()", conn))
+                using (SqlCommand command = new("SELECT TOP 10 Q.* FROM Questions Q Where QuizCategoryID = @QuizCategoryId AND QuestionStatus = 1 ORDER BY NEWID()", conn))
                 {
                     command.Parameters.Add("@QuizCategoryId", SqlDbType.Int).Value = quizCategoryId;
                     using SqlDataReader reader = command.ExecuteReader();

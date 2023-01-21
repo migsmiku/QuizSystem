@@ -1,0 +1,42 @@
+﻿@model OnlineQuiz.Models.Questions
+
+<div>
+    <h4>Questions</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.QuizCategoryId)
+        </dt>
+        <dd class = "col-sm-10">
+            @(((QuizCategory)Model.QuizCategoryId).ToDescription())
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.QuestionText)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.QuestionText)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.QuestionType)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.QuestionType)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.QuestionStatus)
+        </dt>
+        <dd class = "col-sm-10">
+            @(Model.QuestionStatus ? "Active" : "Inactive")
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.QuestionId">Edit</a> |
+    <a class="btn btn-danger" asp-action="EditQuestions">Back</a>
+</div>
