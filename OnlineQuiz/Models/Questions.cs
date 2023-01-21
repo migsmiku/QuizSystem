@@ -14,7 +14,7 @@
 
         public bool QuestionStatus { get; set; }
 
-        public virtual ICollection<Options>? Options { get; set; }
+        public virtual IList<Options>? Options { get; set; }
 
         public virtual ICollection<QuizQuestions>? QuizQuestions { get; set; }
     }

@@ -5,6 +5,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using NuGet.Packaging;
     using OnlineQuiz.DbContext;
     using OnlineQuiz.Models;
     using OnlineQuiz.Models.Enum;
@@ -167,6 +168,57 @@
             
 
             return RedirectToAction("UpdateQuestionDetail", new {questionId = question.QuestionId});
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateNewQuestion(int questionId)
+        {
+            var question = new Questions()
+            {
+                Options=new List<Options>(),
+            };
+            question.Options.AddRange(Enumerable.Range(0, 4).Select(x => new Options()
+            {
+                QuestionId= questionId,
+            }));
+            return View(question);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateNewQuestion(Questions question, IFormCollection form)
+        {
+            using (var transaction = await _quizDbContext.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    question.CreatedDate= DateTime.Now;
+                    _quizDbContext.Questions.Add(question);
+                    await _quizDbContext.SaveChangesAsync();
+                    var newQuestionId = question.QuestionId;
+                    var options = new List<Options>();
+                    for (var i = 0; i < Convert.ToInt32(form["TotalOptionsCount"]); i++)
+                    {
+                        options.Add(new Options
+                        {
+                            QuestionId = newQuestionId,
+                            OptionText = form["option.OptionText"][i],
+                            IsCorrect = form[$"IsCorrect{i}"] == "true"
+                        });
+                    }
+                    await _quizDbContext.Options.AddRangeAsync(options);
+                    await _quizDbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+
+            }
+
+
+            return RedirectToAction("GetQuestionDetail", new { questionId = question.QuestionId });
         }
     }
 }

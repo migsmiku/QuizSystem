@@ -4,28 +4,28 @@
     ViewData["Title"] = "EditQuestions";
 }
 
-<h1>EditQuestions</h1>
+<h1>Question Lists</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
+    <a asp-action="CreateNewQuestion" class="btn btn-outline-primary">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayName("QuizCategoryId")
+                @Html.DisplayName("Quiz Category")
             </th>                 
             <th>                  
-                @Html.DisplayName("QuestionText")
+                @Html.DisplayName("Question Text")
             </th>                 
             <th>                  
-                @Html.DisplayName("QuestionType")
+                @Html.DisplayName("Question Type")
             </th>                 
             <th>                  
-                @Html.DisplayName("CreatedDate")
+                @Html.DisplayName("Created Date")
             </th>                 
             <th>                  
-                @Html.DisplayName("QuestionStatus")
+                @Html.DisplayName("Question Status")
             </th>
             <th>
                 @Html.DisplayName("Actions")
@@ -53,7 +53,7 @@
                     @(item.QuestionStatus?"Active":"Inactive")
                 </td>
                 <td class="btn-group">
-                        <a class="btn btn-outline-primary" asp-action="Update" asp-route-QuestionId="@item.QuestionId">Update</a>
+                        <a class="btn btn-outline-primary" asp-action="UpdateQuestionDetail" asp-route-QuestionId="@item.QuestionId">Update</a>
                         <a class="btn btn-secondary" asp-action="GetQuestionDetail" asp-route-QuestionId="@item.QuestionId">Details</a>
                         @if (item.QuestionStatus)
                         {

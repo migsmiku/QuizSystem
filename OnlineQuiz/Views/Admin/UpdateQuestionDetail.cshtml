@@ -13,7 +13,7 @@
         <form asp-action="UpdateQuestionDetail">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="QuestionId" />
-            <input type="hidden" name="TotalOptionsCount" value="@Model.Options.Count" />
+            <input type="hidden" name="TotalOptionsCount" value="@Model.Options?.Count" />
             <div class="form-group">
                 <label asp-for="QuizCategoryId" class="control-label"></label>
                 <select asp-for="QuizCategoryId" class="form-control">
