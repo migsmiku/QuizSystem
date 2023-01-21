@@ -1,0 +1,98 @@
+﻿@model AdminViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["title"] = "_QuizResultPartial";
+}
+
+
+<div id="data-container">
+<table class="table">
+    <thead>
+        <tr>
+            <th id="finishedDate">
+                    @Html.DisplayName("Quiz finished date")
+            </th>
+                <th id="category">
+                    @Html.DisplayName("Quiz category")
+            </th>
+                <th id="user-full-name">
+                    @Html.DisplayName("User Name")
+            </th>
+            <th id="questionCount">
+                    @Html.DisplayName("Quiz question count")
+            </th>
+            <th id="score">
+                    @Html.DisplayName("Quiz score")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var item in Model.QuizSubmissions)
+            {
+                <tr>
+                    <td>
+                        @(item.EndTime?.ToShortDateString() ?? "")
+                </td>
+                <td>
+                        @(((QuizCategory)(item.Quizzes.QuizCategoryId)).ToDescription())
+                </td>
+                <td id="usertd" onclick="viewUserProfile(@item.Users.UserID)">
+                        @(item.Users.FirstName +" "+item.Users.LastName )
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Quizzes.QuizQuestions.Count)
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Score)
+                </td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="@item.QuizSubmissionId" class="btn btn-primary btn-sm">Edit</a>*@
+                        <a asp-action="SubmitQuiz" asp-controller="Quiz" asp-route-quizId="@item.QuizId" class="btn btn-secondary btn-sm">Details</a>
+                    @*<a asp-action="Delete" asp-route-id="@item.QuizSubmissionId" class="btn btn-danger btn-sm">Delete</a>*@
+                </td>
+            </tr>
+            }
+    </tbody>
+</table>
+    <div class="d-flex flex-lg-row flex-md-row justify-content-between">
+    <div class="pagination-controls">
+            <button onclick="navigateToPreviousPage()" class="btn btn-primary" @(Model.PageNumber != 1 ? "" : "hidden")>Previous</button>
+    </div>
+    <div class="pagination-controls">
+            <div class="d-flex flex-lg-row flex-md-row justify-content-around">
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <label>Page: </label>
+
+                </div>
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <select id="page-selector" name="page-selector" onchange="navigateToSelectedPage()" class="form-control align-content-center" style="height:auto">
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            if (i == Model.PageNumber)
+                            {
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <label> of @Model.TotalPages</label>
+                </div>      
+            </div>
+        
+    </div>
+    <div class="pagination-controls">
+        <button onclick="navigateToNextPage()" class="btn btn-primary" @(Model.PageNumber < Model.TotalPages ? "" : "hidden")>Next</button>
+    </div>
+    </div>
+
+
+</div>
+@*<script src="~/js/sort.js"></script>*@

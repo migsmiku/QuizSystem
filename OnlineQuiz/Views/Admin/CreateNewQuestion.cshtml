@@ -1,0 +1,70 @@
+﻿@model OnlineQuiz.Models.Questions
+
+@{
+    ViewData["Title"] = "CreateNewQuestion";
+}
+
+<h1>CreateNewQuestion</h1>
+
+<h4>Questions</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateNewQuestion">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="TotalOptionsCount" value="@Model.Options?.Count" />
+            <div class="form-group">
+                <label asp-for="QuizCategoryId" class="control-label"></label>
+                <select asp-for="QuizCategoryId" class="form-control">
+                    @foreach (QuizCategory item in Enum.GetValues(typeof(QuizCategory)))
+                    {
+                        <option value="@((int)item)"> @item.ToDescription()</option>
+                    }
+                </select>
+                <span asp-validation-for="QuizCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionText" class="control-label"></label>
+                <input asp-for="QuestionText" class="form-control" />
+                <span asp-validation-for="QuestionText" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionType" class="control-label"></label>
+                <input asp-for="QuestionType" class="form-control" value="1" />
+                <span asp-validation-for="QuestionType" class="text-danger"></span>
+            </div>
+@*            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>*@
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="QuestionStatus" /> @Html.DisplayName("IsActive")
+                </label>
+            </div>
+            
+            @for (var i = 0; i < Model.Options?.Count; i++)
+            {
+                var option = @Model.Options[i];
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="@option.OptionText" class="control-label"></label>
+                    <input asp-for="@option.OptionText" class="form-control" />
+                    <span asp-validation-for="@option.OptionText" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="@option.IsCorrect" name="IsCorrect@(i)" /> @Html.DisplayNameFor(model => @option.IsCorrect)
+                    </label>
+                </div>
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-action="EditQuestions">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+

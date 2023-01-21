@@ -1,0 +1,119 @@
+﻿@model AdminViewModel
+
+@{
+    ViewData["Title"] = "ViewQuizResult";
+}
+
+<h1>ViewQuizResult</h1>
+<div class="container">
+    <a class="btn btn-dark" asp-action="Index">Return</a>
+</div>
+<div class="container">
+    <form id="category-filter-form" method="post" asp-action="ViewQuizResult">
+        <div class="form-group col-3">
+            <label for="category-selector" class="control-label">Select a category:</label>
+            <select id="category-selector" name="categoryFilter" class="form-control col-3">
+                <option value="">All</option>
+                @foreach (QuizCategory category in Enum.GetValues(typeof(QuizCategory)))
+                {
+                    @if (Model.CategoryFilter is not null && category == (QuizCategory)Enum.Parse(typeof(QuizCategory), Model.CategoryFilter))
+                    {
+                        <option value="@(category.ToString())" selected>@(category.ToDescription())</option>
+                    }
+                    else
+                    {
+                        <option value="@(category.ToString())">@(category.ToDescription())</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group col-3">
+            <label for="user-selector" class="control-label">Select a user:</label>
+            <select id="user-selector" name="userFilter" class="form-control">
+                <option value="">All</option>
+                @if (Model.QuizSubmissions is not null)
+                {
+                    @foreach (var user in Model.QuizSubmissions.Select(x => x.Users).Distinct())
+                    {
+                        @if (Model.UserFilter is not null && user.UserID == Convert.ToInt32(Model.UserFilter))
+                        {
+                            <option value="@(user.UserID)" selected>@user.UserID . @user.FirstName @user.LastName</option>
+                        }
+                        else
+                        {
+                            <option value="@(user.UserID)">@user.UserID . @user.FirstName @user.LastName</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+</div>
+
+@{
+    await Html.RenderPartialAsync("_QuizResultPartial", Model);
+    
+}
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title card-body" id="myModalLabel">User Profile</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="hideModal()"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="myModalContent"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/js/sort.js"></script>
+<script>
+    function hideModal() {
+        $('#myModal').modal('hide');
+    }
+    function viewUserProfile(userId) {
+        $.ajax({
+            url: '/Admin/ViewQuizResult/ViewUserProfile',
+            data: { userId: userId },
+            success: function (data) {
+                $('#myModalContent').html(data);
+                $('#myModal').modal('show');
+            }
+        });
+    }
+
+    function navigateToSelectedPage() {
+        var pageNumber = $("#page-selector").val();
+        let selectedCategory = $("#category-selector").val();
+        let selectedUserId = $("#user-selector").val();
+        window.location.href = "/Admin/ViewQuizResult?pageNumber=" + pageNumber + "&categoryFilter=" + selectedCategory + "&userFilter=" + selectedUserId;
+    }
+    function navigateToPreviousPage() {
+        var pageNumber = $("#page-selector").val();
+        let selectedCategory = $("#category-selector").val();
+        let selectedUserId = $("#user-selector").val();
+        if (pageNumber > 1) {
+            pageNumber--;
+            window.location.href = "/Admin/ViewQuizResult?pageNumber=" + pageNumber + "&categoryFilter=" + selectedCategory + "&userFilter=" + selectedUserId;
+        }
+    }
+    function navigateToNextPage() {
+        let pageNumber = $("#page-selector").val();
+        let selectedCategory = $("#category-selector").val();
+        let selectedUserId = $("#user-selector").val();
+        if (pageNumber < @Model.TotalPages) {
+            pageNumber++;
+            window.location.href = "/Admin/ViewQuizResult?pageNumber=" + pageNumber + "&categoryFilter=" + selectedCategory + "&userFilter=" + selectedUserId;
+        }
+    }
+</script>
+
+
+   
+
+

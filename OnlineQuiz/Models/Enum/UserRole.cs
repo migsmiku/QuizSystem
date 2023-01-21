@@ -1,4 +1,4 @@
-﻿namespace OnlineQuiz.Models
+﻿namespace OnlineQuiz.Models.Enum
 {
     public enum UserRole
     {

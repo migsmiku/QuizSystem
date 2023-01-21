@@ -19,7 +19,7 @@
 
         public ActionResult ChooseQuizCategory()
         {
-            IEnumerable<QuizCategory> quizCategory = _quizDao.GetQuizCategory();
+            IEnumerable<QuizCategories> quizCategory = _quizDao.GetQuizCategory();
             return View(quizCategory);
         }
 

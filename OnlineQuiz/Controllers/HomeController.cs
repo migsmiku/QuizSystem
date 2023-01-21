@@ -1,8 +1,10 @@
 ﻿namespace OnlineQuiz.Controllers
 {
     using System.Diagnostics;
+    using System.Security.Claims;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using NuGet.Versioning;
     using OnlineQuiz.DAL;
     using OnlineQuiz.Models;
 

@@ -63,7 +63,7 @@
                                 <dd class="col-sm-9 float-left">
                                     <input type="radio" name="selectedOptionId_@(i)" value="@option.OptionId"
                            id="option@(option.OptionId)" 
-                           @(option.OptionId==Model.QuizQuestions[i].SelectedOptionId?"checked":"") />
+                           @(option.OptionId==Model.QuizQuestions[i].SelectedOptionId?"checked":"") disabled/>
                                         <label for="option@(option.OptionId)">@option.OptionText</label>
                                 </dd>
                         @if(option.OptionId == Model.QuizQuestions[i].SelectedOptionId)
