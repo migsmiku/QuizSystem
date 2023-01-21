@@ -1,18 +1,34 @@
 ﻿namespace OnlineQuiz.Models
 {
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Security.Cryptography.X509Certificates;
 
+    [NotMapped]
     public class UserRegisterModel : Users
     {
         [Required]
-        public new string? FirstName { get; set; }
+        public string? FirstName { get; set; }
         [Required]
-        public new string? LastName { get; set; }
+        public string? LastName { get; set; }
         [Required]
-        public new string? Email { get; set; }
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password:")]
+        [Compare("Password",ErrorMessage ="Password Not Match")]
+        [NotMapped]
+        public string? ConfirmPassword { get; set; }
+        [Required, EmailAddress]
+        public string? Email { get; set; }
         [Required]
         [Display(Name = "Date of Birth")]
         [DataType(DataType.Date)]
-        public new DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
+
+        [Required, Phone]
+        public string? Phone { get; set; }
+
+        [Required]
+        public string? Address { get; set; }
     }
 }

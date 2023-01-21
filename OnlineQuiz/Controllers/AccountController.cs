@@ -5,16 +5,19 @@
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Mvc;
     using OnlineQuiz.DAL;
+    using OnlineQuiz.DbContext;
     using OnlineQuiz.Models;
     using OnlineQuiz.Models.Enum;
 
     public class AccountController : Controller
     {
         private readonly IAccountDAL _accountDAO;
+        private readonly QuizDbContext _quizDbContext;
 
-        public AccountController(IAccountDAL accountDAO)
+        public AccountController(IAccountDAL accountDAO, QuizDbContext quizDbContext)
         {
             _accountDAO = accountDAO;
+            _quizDbContext = quizDbContext;
         }
 
         public IActionResult Index()
@@ -65,20 +68,38 @@
         [HttpPost]
         public IActionResult Register(UserRegisterModel user)
         {
-            if (!ModelState.IsValid) { _ = Redirect("/Home/Index"); }
+            if (!ModelState.IsValid) { return RedirectToAction("Index"); }
             if (user == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
             user.UserRoleId = (int)UserRole.User;
+            var newUser = new Users()
+            {
+                UserName= user.UserName,
+                UserRoleId= user.UserRoleId,
+                FirstName= user.FirstName,
+                LastName= user.LastName,
+                DateOfBirth= user.DateOfBirth,
+                Email= user.Email,
+                Address= user.Address,
+                Password= user.Password,
+                Phone= user.Phone,
+            };
             try
             {
-                _accountDAO.CreateUser(user);
+                _quizDbContext.Users.Add(newUser);
+                _quizDbContext.SaveChanges();
+                //_accountDAO.CreateUser(user);
             }
             catch (Exception ex)
             {
+#if DEBUG
+                throw ex;
+#else
                 return View("Error", new ErrorViewModel
                 {
                     RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-                    ErrorDescription = ex.Message
+                    ErrorDescription = ex.Message                 
                 });
+#endif
             }
             return Redirect("/");
         }

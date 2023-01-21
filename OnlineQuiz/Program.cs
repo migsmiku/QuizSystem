@@ -3,7 +3,9 @@ using OnlineQuiz.DAL;
 using OnlineQuiz.DbContext;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
+//addlogging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

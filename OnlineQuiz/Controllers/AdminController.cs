@@ -1,5 +1,6 @@
 ﻿namespace OnlineQuiz.Controllers
 {
+    using System.Diagnostics;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -22,8 +23,8 @@
             return View();
         }
 
-        [HttpGet]
-        public IActionResult ViewQuizResult(int pageNumber = 1, int pageSize = 20)
+        [Route("Admin/ViewQuizResult")]
+        public IActionResult ViewQuizResult([FromQuery]int pageNumber = 1, int pageSize = 20)
         {
             int totalRecords = _quizDbContext.QuizSubmissions.Count();
             int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
@@ -90,9 +91,19 @@
         //    return View(adminViewModel);
         //}
 
-        public IActionResult ViewUserProfile()
+        [Route("Admin/ViewQuizResult/ViewUserProfile")]
+        public async Task<IActionResult> ViewUserProfile([FromQuery]int userId)
         {
-            return View();
+            var user = await _quizDbContext.Users.SingleOrDefaultAsync(x=>x.UserID.Equals(userId));
+            if (user == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
+            return View("_ViewUserProfilePartial",user);
+        }
+
+        public IActionResult ViewAllUserProfile()
+        {
+            var user = _quizDbContext.Users.AsNoTrackingWithIdentityResolution();
+            if (user == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
+            return View(user);
         }
 
         public IActionResult EditQuestions()

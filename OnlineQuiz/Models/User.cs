@@ -31,6 +31,10 @@
         [Display(Name = "Password:")]
         public string? Password { get; set; }
 
+        public string? Phone { get; set; }
+
+        public string? Address { get; set; }
+
         [InverseProperty("Users")]
         public virtual QuizSubmissions? QuizSubmissions { get; set; }
     }

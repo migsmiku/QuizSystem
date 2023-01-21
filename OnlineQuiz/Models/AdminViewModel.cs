@@ -16,5 +16,7 @@
         public IQueryable<QuizSubmissions>? QuizSubmissions { get; set; }
 
         public ICollection<Quizzes>? Quizzes { get; set; }
+
+        public IQueryable<Users>? Users { get; set; }
     }
 }

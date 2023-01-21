@@ -39,7 +39,7 @@
                 <td>
                         @(((QuizCategory)(item.Quizzes.QuizCategoryId)).ToDescription())
                 </td>
-                <td>
+                <td id="usertd" onclick="viewUserProfile(@item.Users.UserID)">
                         @(item.Users.FirstName +" "+item.Users.LastName )
                 </td>
                 <td>
@@ -49,8 +49,8 @@
                         @Html.DisplayFor(modelItem => item.Score)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.QuizSubmissionId" class="btn btn-primary btn-sm">Edit</a> 
-                    <a asp-action="Details" asp-route-id="@item.QuizSubmissionId" class="btn btn-secondary btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.QuizSubmissionId" class="btn btn-primary btn-sm">Edit</a>
+                        <a asp-action="SubmitQuiz" asp-controller="Quiz" asp-route-quizId="@item.QuizId" class="btn btn-secondary btn-sm">Details</a>
                     <a asp-action="Delete" asp-route-id="@item.QuizSubmissionId" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
@@ -63,28 +63,35 @@
     </div>
     <div class="pagination-controls">
             <div class="d-flex flex-lg-row flex-md-row justify-content-around">
-                <label>Page:</label>
-                <select id="page-selector" name="page-selector" onchange="navigateToSelectedPage()" class="form-control align-content-center" style="height:35px;">
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                if (i == Model.PageNumber)
-                {
-                    <option value="@i" selected>@i</option>
-                }
-                else
-                {
-                    <option value="@i">@i</option>
-                }
-            }
-        </select>
-        <label>of @Model.TotalPages</label>
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <label>Page: </label>
+
+                </div>
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <select id="page-selector" name="page-selector" onchange="navigateToSelectedPage()" class="form-control align-content-center" style="height:auto">
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            if (i == Model.PageNumber)
+                            {
+                                <option value="@i" selected>@i</option>
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <label> of @Model.TotalPages</label>
+                </div>      
             </div>
         
     </div>
     <div class="pagination-controls">
         <button onclick="navigateToNextPage()" class="btn btn-primary" @(Model.PageNumber < Model.TotalPages ? "" : "disabled")>Next</button>
     </div>
-</div>
+    </div>
 
 
 </div>

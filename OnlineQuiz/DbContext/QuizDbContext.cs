@@ -15,8 +15,12 @@
         public DbSet<Users> Users { get; set; }
         public DbSet<Quizzes> Quizzes { get; set; }
 
+        //public DbSet<UserRegisterModel> UserRegisterModels { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //_ = modelBuilder.Entity<UserRegisterModel>().ToTable("Users");
+
             _ = modelBuilder.Entity<QuizQuestions>().HasKey(qq => new { qq.QuizId, qq.QuestionId });
 
             _ = modelBuilder.Entity<QuizQuestions>()

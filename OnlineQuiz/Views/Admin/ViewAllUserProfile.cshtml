@@ -1,0 +1,106 @@
+﻿@model AdminViewModel
+
+@{
+    ViewData["Title"] = "ViewAllUserProfile";
+}
+
+<h1>ViewAllUserProfile</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("First Name")
+            </th>
+            <th>
+                @Html.DisplayName("Last Name")
+            </th>
+            <th>
+                @Html.DisplayName("Email")
+            </th>
+            <th>
+                @Html.DisplayName("Date Of Birth")
+            </th>
+            <th>
+                @Html.DisplayName("Phone")
+            </th>
+            <th>
+                @Html.DisplayName("Address")
+            </th>
+            <th>
+                @Html.DisplayName("Status")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model is not null && Model.Users is not null)
+        {
+            @foreach (var item in Model.Users)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfBirth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Phone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserRoleId)
+                    </td>
+                    <td>
+                        <a asp-action="Activate" asp-route-UserID="@item.UserID">Activate</a> |
+                        <a asp-action="Suspend" asp-route-UserID="@item.UserID">Suspend</a>
+                    </td>
+                </tr>
+            }        
+        }
+    </tbody>
+</table>
+    <div class="d-flex flex-lg-row flex-md-row justify-content-between">
+    <div class="pagination-controls">
+        <button onclick="navigateToPreviousPage()" class="btn btn-primary" @(Model.PageNumber != 1 ? "" : "disabled")>Previous</button>
+    </div>
+    <div class="pagination-controls">
+            <div class="d-flex flex-lg-row flex-md-row justify-content-around">
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <label>Page: </label>
+
+                </div>
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <select id="page-selector" name="page-selector" onchange="navigateToSelectedPage()" class="form-control align-content-center" style="height:auto">
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i == Model.PageNumber)
+                        {
+                                        <option value="@i" selected>@i</option>
+                        }
+                        else
+                        {
+                                        <option value="@i">@i</option>
+                        }
+                    }
+                    </select>
+                </div>
+                <div class="mx-auto my-auto mt-auto mb-auto">
+                    <label> of @Model.TotalPages</label>
+                </div>      
+            </div>
+
+    </div>
+    <div class="pagination-controls">
+        <button onclick="navigateToNextPage()" class="btn btn-primary" @(Model.PageNumber < Model.TotalPages ? "" : "disabled")>Next</button>
+    </div>
+    </div>
