@@ -18,5 +18,7 @@
         public ICollection<Quizzes>? Quizzes { get; set; }
 
         public IQueryable<Users>? Users { get; set; }
+        public string CategoryFilter { get; internal set; }
+        public string UserFilter { get; internal set; }
     }
 }

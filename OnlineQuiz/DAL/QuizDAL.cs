@@ -245,7 +245,7 @@
                     quizSubmissions.QuizId = (int)reader["QuizId"];
                     quizSubmissions.UserId = (int)reader["UserId"];
                     quizSubmissions.StartTime = (DateTime)reader["StartTime"];
-                    quizSubmissions.EndTime = reader["EndTime"] is not null?(DateTime)reader["EndTime"]:null;
+                    quizSubmissions.EndTime = !Convert.IsDBNull(reader["EndTime"]) ? Convert.ToDateTime(reader["EndTime"]):DateTime.MinValue;
                     quizSubmissions.Score = (int)reader["Score"];
                     quizSubmissions.CreatedDate = (DateTime)reader["CreatedDate"];                        
                 }

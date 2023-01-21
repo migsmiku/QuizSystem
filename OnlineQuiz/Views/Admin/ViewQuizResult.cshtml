@@ -16,7 +16,14 @@
                 <option value="">All</option>
                 @foreach (QuizCategory category in Enum.GetValues(typeof(QuizCategory)))
                 {
-                    <option value="@(category.ToString())">@(category.ToDescription())</option>
+                    @if (Model.CategoryFilter is not null && category == (QuizCategory)Enum.Parse(typeof(QuizCategory), Model.CategoryFilter))
+                    {
+                        <option value="@(category.ToString())" selected>@(category.ToDescription())</option>
+                    }
+                    else
+                    {
+                        <option value="@(category.ToString())">@(category.ToDescription())</option>
+                    }
                 }
             </select>
         </div>
@@ -28,7 +35,14 @@
                 {
                     @foreach (var user in Model.QuizSubmissions.Select(x => x.Users).Distinct())
                     {
-                        <option value="@(user.UserID)">@user.FirstName @user.LastName</option>
+                        @if (Model.UserFilter is not null && user.UserID == Convert.ToInt32(Model.UserFilter))
+                        {
+                            <option value="@(user.UserID)" selected>@user.UserID . @user.FirstName @user.LastName</option>
+                        }
+                        else
+                        {
+                            <option value="@(user.UserID)">@user.UserID . @user.FirstName @user.LastName</option>
+                        }
                     }
                 }
             </select>
@@ -55,11 +69,13 @@
     </div>
 </div>
 
+
+
 <script src="~/js/sort.js"></script>
 <script>
-        function hideModal(){
-            $('#myModal').modal('hide');
-        }
+    function hideModal() {
+        $('#myModal').modal('hide');
+    }
     function viewUserProfile(userId) {
         $.ajax({
             url: '/Admin/ViewQuizResult/ViewUserProfile',
@@ -73,20 +89,31 @@
 
     function navigateToSelectedPage() {
         var pageNumber = $("#page-selector").val();
-        window.location.href = "/Admin/ViewQuizResult?pageNumber=" + pageNumber;
+        let selectedCategory = $("#category-selector").val();
+        let selectedUserId = $("#user-selector").val();
+        window.location.href = "/Admin/ViewQuizResult?pageNumber=" + pageNumber + "&categoryFilter=" + selectedCategory + "&userFilter=" + selectedUserId;
     }
     function navigateToPreviousPage() {
         var pageNumber = $("#page-selector").val();
+        let selectedCategory = $("#category-selector").val();
+        let selectedUserId = $("#user-selector").val();
         if (pageNumber > 1) {
             pageNumber--;
-            window.location.href = "/Admin/ViewQuizResult?pageNumber=" + pageNumber;
+            window.location.href = "/Admin/ViewQuizResult?pageNumber=" + pageNumber + "&categoryFilter=" + selectedCategory + "&userFilter=" + selectedUserId;
         }
     }
     function navigateToNextPage() {
         let pageNumber = $("#page-selector").val();
+        let selectedCategory = $("#category-selector").val();
+        let selectedUserId = $("#user-selector").val();
         if (pageNumber < @Model.TotalPages) {
             pageNumber++;
-            window.location.href = "/Admin/ViewQuizResult?pageNumber="+ pageNumber;
+            window.location.href = "/Admin/ViewQuizResult?pageNumber=" + pageNumber + "&categoryFilter=" + selectedCategory + "&userFilter=" + selectedUserId;
         }
     }
 </script>
+
+
+   
+
+

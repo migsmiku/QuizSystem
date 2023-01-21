@@ -49,9 +49,9 @@
                         @Html.DisplayFor(modelItem => item.Score)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.QuizSubmissionId" class="btn btn-primary btn-sm">Edit</a>
+                    @*<a asp-action="Edit" asp-route-id="@item.QuizSubmissionId" class="btn btn-primary btn-sm">Edit</a>*@
                         <a asp-action="SubmitQuiz" asp-controller="Quiz" asp-route-quizId="@item.QuizId" class="btn btn-secondary btn-sm">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.QuizSubmissionId" class="btn btn-danger btn-sm">Delete</a>
+                    @*<a asp-action="Delete" asp-route-id="@item.QuizSubmissionId" class="btn btn-danger btn-sm">Delete</a>*@
                 </td>
             </tr>
             }
@@ -59,7 +59,7 @@
 </table>
     <div class="d-flex flex-lg-row flex-md-row justify-content-between">
     <div class="pagination-controls">
-        <button onclick="navigateToPreviousPage()" class="btn btn-primary" @(Model.PageNumber != 1 ? "" : "disabled")>Previous</button>
+            <button onclick="navigateToPreviousPage()" class="btn btn-primary" @(Model.PageNumber != 1 ? "" : "hidden")>Previous</button>
     </div>
     <div class="pagination-controls">
             <div class="d-flex flex-lg-row flex-md-row justify-content-around">
@@ -89,10 +89,10 @@
         
     </div>
     <div class="pagination-controls">
-        <button onclick="navigateToNextPage()" class="btn btn-primary" @(Model.PageNumber < Model.TotalPages ? "" : "disabled")>Next</button>
+        <button onclick="navigateToNextPage()" class="btn btn-primary" @(Model.PageNumber < Model.TotalPages ? "" : "hidden")>Next</button>
     </div>
     </div>
 
 
 </div>
-<script src="~/js/sort.js"></script>
+@*<script src="~/js/sort.js"></script>*@

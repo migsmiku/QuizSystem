@@ -23,47 +23,49 @@
             return View();
         }
 
-        [Route("Admin/ViewQuizResult")]
-        public IActionResult ViewQuizResult([FromQuery]int pageNumber = 1, int pageSize = 20)
-        {
-            int totalRecords = _quizDbContext.QuizSubmissions.Count();
-            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-            AdminViewModel adminViewModel = new()
-            {
-                TotalRecords = totalRecords,
-                TotalPages = totalPages,
-                PageNumber = pageNumber,
-                QuizSubmissions = _quizDbContext.QuizSubmissions.AsNoTracking()
-                                                                           .Include(x => x.Quizzes)
-                                                                           .ThenInclude(q => q.QuizQuestions)
-                                                                           .Include(u => u.Users).OrderByDescending(x => x.EndTime)
-                                                                           .Skip((pageNumber - 1) * pageSize)
-                                                                           .Take(pageSize)
-            };
-            return View(adminViewModel);
-        }
+        //[HttpGet("Admin/ViewQuizResult")]
+        //public IActionResult ViewQuizResult([FromQuery]int pageNumber = 1, int pageSize = 20)
+        //{
+        //    int totalRecords = _quizDbContext.QuizSubmissions.Count();
+        //    int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+        //    AdminViewModel adminViewModel = new()
+        //    {
+        //        TotalRecords = totalRecords,
+        //        TotalPages = totalPages,
+        //        PageNumber = pageNumber,
+        //        QuizSubmissions = _quizDbContext.QuizSubmissions.AsNoTracking()
+        //                                                                   .Include(x => x.Quizzes)
+        //                                                                   .ThenInclude(q => q.QuizQuestions)
+        //                                                                   .Include(u => u.Users).OrderByDescending(x => x.EndTime)
+        //                                                                   .Skip((pageNumber - 1) * pageSize)
+        //                                                                   .Take(pageSize)
+        //    };
+        //    return View(adminViewModel);
+        //}
 
-        [HttpPost]
+        //[HttpPost]
         public IActionResult ViewQuizResult(IFormCollection form, string categoryFilter, string userFilter, int pageNumber = 1, int pageSize = 20)
         {
-            
-            AdminViewModel adminViewModel = new()
-            {
-                PageNumber = pageNumber,
-                QuizSubmissions = _quizDbContext.QuizSubmissions.AsNoTracking()
+            var quizSubmissions = _quizDbContext.QuizSubmissions.AsNoTracking()
                                                                            .Include(x => x.Quizzes)
                                                                            .ThenInclude(q => q.QuizQuestions)
                                                                            .Where(x => categoryFilter == null || x.Quizzes.QuizCategories.QuizCategoryName == ((QuizCategory)Enum.Parse(typeof(QuizCategory), categoryFilter)).ToDescription())
                                                                            .Include(u => u.Users)
                                                                            .Where(u => userFilter == null || u.UserId == Convert.ToInt32(userFilter))
-                                                                           .OrderByDescending(x => x.EndTime)
-                                                                           .Skip((pageNumber - 1) * pageSize)
-                                                                           .Take(pageSize)
-            };
-            int totalRecords = adminViewModel.QuizSubmissions.Count();
+                                                                           .OrderByDescending(x => x.EndTime);
+            int totalRecords = quizSubmissions.Count();
             int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-            adminViewModel.TotalRecords = totalRecords;
-            adminViewModel.TotalPages= totalPages;
+
+            AdminViewModel adminViewModel = new()
+            {
+                TotalRecords = totalRecords,
+                TotalPages = totalPages,
+                PageNumber = pageNumber,
+                CategoryFilter = categoryFilter,
+                UserFilter = userFilter,
+                QuizSubmissions= quizSubmissions.Skip((pageNumber - 1) * pageSize)
+                                                .Take(pageSize)
+            };
 
             return View(adminViewModel);
         }
@@ -99,11 +101,21 @@
             return View("_ViewUserProfilePartial",user);
         }
 
-        public IActionResult ViewAllUserProfile()
+        public IActionResult ViewAllUserProfile(int pageNumber = 1, int pageSize = 20)
         {
-            var user = _quizDbContext.Users.AsNoTrackingWithIdentityResolution();
-            if (user == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
-            return View(user);
+            var users = _quizDbContext.Users.AsNoTrackingWithIdentityResolution();
+            if (users == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
+            int totalRecords = users.Count();
+            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            AdminViewModel adminViewModel = new()
+            {
+                TotalRecords = totalRecords,
+                TotalPages = totalPages,
+                PageNumber = pageNumber,
+                Users= users
+            };
+                        
+            return View(adminViewModel);
         }
 
         public IActionResult EditQuestions()
