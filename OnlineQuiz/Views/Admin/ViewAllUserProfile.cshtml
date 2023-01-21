@@ -30,13 +30,15 @@
             <th>
                 @Html.DisplayName("Status")
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayName("Activate/Suspend")
+            </th>
         </tr>
     </thead>
     <tbody>
         @if(Model is not null && Model.Users is not null)
         {
-            @foreach (var item in Model.Users)
+            @foreach (var item in Model.Users.Where(x=>(UserRole)x.UserRoleId != UserRole.Admin))
             {
                 <tr>
                     <td>
@@ -58,11 +60,15 @@
                         @Html.DisplayFor(modelItem => item.Address)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.UserRoleId)
+                        @(item.UserStatus?"Active":"Suspended" )
                     </td>
-                    <td>
-                        <a asp-action="Activate" asp-route-UserID="@item.UserID">Activate</a> |
-                        <a asp-action="Suspend" asp-route-UserID="@item.UserID">Suspend</a>
+                    <td class="align-content-center">
+                        @if (item.UserStatus)
+                        {
+                            <a class="btn-danger" asp-action="ManageUserStatus" asp-route-UserID="@item.UserID" asp-route-Status="Suspended">Suspend</a>                            
+                        }else{
+                            <a class="btn-outline-primary" asp-action="ManageUserStatus" asp-route-UserID="@item.UserID" asp-route-Status="Active">Activate</a>
+                        }
                     </td>
                 </tr>
             }        

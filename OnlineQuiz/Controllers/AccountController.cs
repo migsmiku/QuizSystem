@@ -35,7 +35,7 @@
         public async Task<IActionResult> Login(Users user)
         {
             user = _accountDAO.Login(user.UserName, user.Password);
-            if (!ModelState.IsValid || user is null) { return View("AccessDenied"); }
+            if (!ModelState.IsValid || user is null || !user.UserStatus) { return View("AccessDenied"); }
             List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.Sid, user.UserID.ToString()),

@@ -118,6 +118,14 @@
             return View(adminViewModel);
         }
 
+        public async Task<ActionResult> ManageUserStatus(int userId, string status)
+        {
+            var user = _quizDbContext.Users.Single(x => x.UserID == userId);
+            user.UserStatus = status == "Active";
+            await _quizDbContext.SaveChangesAsync();
+            return RedirectToAction("ViewAllUserProfile");
+        }
+
         public IActionResult EditQuestions()
         {
             return View();

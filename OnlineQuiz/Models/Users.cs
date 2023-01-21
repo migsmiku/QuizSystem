@@ -35,6 +35,8 @@
 
         public string? Address { get; set; }
 
+        public bool UserStatus { get; set; }
+
         [InverseProperty("Users")]
         public virtual QuizSubmissions? QuizSubmissions { get; set; }
     }

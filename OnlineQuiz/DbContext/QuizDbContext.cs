@@ -15,11 +15,13 @@
         public DbSet<Users> Users { get; set; }
         public DbSet<Quizzes> Quizzes { get; set; }
 
-        //public DbSet<UserRegisterModel> UserRegisterModels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //_ = modelBuilder.Entity<UserRegisterModel>().ToTable("Users");
+            modelBuilder.Entity<Users>()
+                .Property(u => u.UserStatus)
+                .HasColumnName("UserStatus")
+                .HasColumnType("BIT");
 
             _ = modelBuilder.Entity<QuizQuestions>().HasKey(qq => new { qq.QuizId, qq.QuestionId });
 
