@@ -5,12 +5,10 @@
 }
 
 <h1>ViewQuizResult</h1>
-<div class="container">
-    <a class="btn btn-dark" asp-action="Index">Return</a>
-</div>
-<div class="container">
+<div class="container d-flex">
+<div class="container align-content-around">
     <form id="category-filter-form" method="post" asp-action="ViewQuizResult">
-        <div class="form-group col-3">
+            <div class="form-group col-3">
             <label for="category-selector" class="control-label">Select a category:</label>
             <select id="category-selector" name="categoryFilter" class="form-control col-3">
                 <option value="">All</option>
@@ -48,9 +46,10 @@
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Filter</button>
+            <a class="btn btn-dark" asp-action="Index">Return</a>
     </form>
 </div>
-
+</div>
 @{
     await Html.RenderPartialAsync("_QuizResultPartial", Model);
     

@@ -10,10 +10,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayName("First Name")
+                @Html.DisplayName("User Name")
             </th>
             <th>
-                @Html.DisplayName("Last Name")
+                @Html.DisplayName("Full Name")
             </th>
             <th>
                 @Html.DisplayName("Email")
@@ -42,10 +42,10 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
+                        @Html.DisplayFor(modelItem => item.UserName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
+                        @(item.FirstName + " " + item.LastName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Email)
