@@ -6,10 +6,12 @@ namespace OnlineQuizTest.Controller
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.QualityTools.Testing.Fakes.Stubs;
     using Moq;
+    using NSubstitute;
     using OnlineQuiz.Controllers;
     using OnlineQuiz.DAL;
     using OnlineQuiz.DbContext;
@@ -29,11 +31,43 @@ namespace OnlineQuizTest.Controller
         }
 
         public AccountControllerTests()
-        {          
+        {
+            IAuthenticationService authenticationService = Substitute.For<IAuthenticationService>();
+
+            authenticationService
+                .SignInAsync(Arg.Any<HttpContext>(), Arg.Any<string>(), Arg.Any<ClaimsPrincipal>(),
+                    Arg.Any<AuthenticationProperties>()).Returns(Task.FromResult((object)null));
+
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            //var authSchemaProvider = Substitute.For<IAuthenticationSchemeProvider>();
+            //var systemClock = Substitute.For<ISystemClock>();
+
+            //authSchemaProvider.GetDefaultAuthenticateSchemeAsync().Returns(Task.FromResult
+            //(new AuthenticationScheme("idp", "idp",
+            //    typeof(IAuthenticationHandler))));
+
+            serviceProvider.GetService(typeof(IAuthenticationService)).Returns(authenticationService);
+            //serviceProvider.GetService(typeof(ISystemClock)).Returns(systemClock);
+            //serviceProvider.GetService(typeof(IAuthenticationSchemeProvider)).Returns(authSchemaProvider);
+
+            var httpContext = Substitute.For<HttpContext>();
+            //var session = Substitute.For<ISession>();
+            //httpContext.Session.Returns(session);
+
+            serviceProvider
+                    .GetService(Arg.Is(typeof(ITempDataDictionaryFactory)))
+                    .Returns(Substitute.For<ITempDataDictionaryFactory>());
+            serviceProvider
+                    .GetService(Arg.Is(typeof(IUrlHelperFactory)))
+                    .Returns(Substitute.For<IUrlHelperFactory>());
+            httpContext.RequestServices.Returns(serviceProvider);
+            var controllerContext = new ControllerContext { HttpContext = httpContext };
+
             _quizDbContextMock = new Mock<QuizDbContext>();
             _mockHttpContext = new Mock<HttpContext>();
             _accountDAOMock = new Mock<IAccountDAL>();
             _accountController = new AccountController(_accountDAOMock.Object, _quizDbContextMock.Object);
+            _accountController.ControllerContext = controllerContext;
         }
 
         [Fact]
@@ -54,7 +88,7 @@ namespace OnlineQuizTest.Controller
         }
 
         [Fact]
-        public void Login_Post_ReturnAccessDeniedViewResult_GivenInvalidUser()
+        public async Task Login_Post_ReturnAccessDeniedViewResult_GivenInvalidUserAsync()
         {
             var user = new Users
             {
@@ -63,7 +97,7 @@ namespace OnlineQuizTest.Controller
             };
             _accountDAOMock.Setup(x => x.Login(user.UserName, user.Password)).Returns(null as Users);
 
-            var result = _accountController.Login(user);
+            var result = await _accountController.Login(user);
 
             Assert.IsType<ViewResult>(result);
             Assert.Equal("AccessDenied", (result as ViewResult).ViewName);
@@ -87,7 +121,7 @@ namespace OnlineQuizTest.Controller
 
             _accountDAOMock.Setup(a => a.Login(user.UserName, user.Password)).Returns(user);
 
-            var result = _accountController.Login(user);
+            var result = await _accountController.Login(user);
             
             Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("ChooseQuizCategory", (result as RedirectToActionResult).ActionName);
