@@ -5,6 +5,9 @@ namespace OnlineQuizTest.Controller
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.QualityTools.Testing.Fakes.Stubs;
     using Moq;
     using OnlineQuiz.Controllers;
@@ -12,19 +15,25 @@ namespace OnlineQuizTest.Controller
     using OnlineQuiz.DbContext;
     using OnlineQuiz.Models;
     using OnlineQuiz.Models.Enum;
+    using static OnlineQuizTest.Controller.AccountControllerTests;
 
     public class AccountControllerTests
     {
         private readonly AccountController _accountController;
         private readonly Mock<IAccountDAL> _accountDAOMock;
-        private readonly Mock<QuizDbContext> _quizDbContext;
+        private readonly Mock<QuizDbContext> _quizDbContextMock;
+        private readonly Mock<HttpContext> _mockHttpContext;
 
+        internal interface IQuizDbContext
+        {
+        }
 
         public AccountControllerTests()
-        {
+        {          
+            _quizDbContextMock = new Mock<QuizDbContext>();
+            _mockHttpContext = new Mock<HttpContext>();
             _accountDAOMock = new Mock<IAccountDAL>();
-            _quizDbContext = new Mock<QuizDbContext>();
-            _accountController = new AccountController(_accountDAOMock.Object, _quizDbContext.Object);
+            _accountController = new AccountController(_accountDAOMock.Object, _quizDbContextMock.Object);
         }
 
         [Fact]
@@ -45,7 +54,7 @@ namespace OnlineQuizTest.Controller
         }
 
         [Fact]
-        public async Task Login_Post_ReturnAccessDeniedViewResult_GivenInvalidUser()
+        public void Login_Post_ReturnAccessDeniedViewResult_GivenInvalidUser()
         {
             var user = new Users
             {
@@ -54,7 +63,7 @@ namespace OnlineQuizTest.Controller
             };
             _accountDAOMock.Setup(x => x.Login(user.UserName, user.Password)).Returns(null as Users);
 
-            var result = await _accountController.Login(user);
+            var result = _accountController.Login(user);
 
             Assert.IsType<ViewResult>(result);
             Assert.Equal("AccessDenied", (result as ViewResult).ViewName);
@@ -72,12 +81,13 @@ namespace OnlineQuizTest.Controller
                 FirstName = "valid",
                 LastName = "user",
                 Email = "valid.user@test.com",
-                UserRoleId = (int)UserRole.User
+                UserRoleId = (int)UserRole.User,
+                UserStatus = true
             };
 
             _accountDAOMock.Setup(a => a.Login(user.UserName, user.Password)).Returns(user);
 
-            var result = await _accountController.Login(user);
+            var result = _accountController.Login(user);
             
             Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("ChooseQuizCategory", (result as RedirectToActionResult).ActionName);
@@ -110,14 +120,18 @@ namespace OnlineQuizTest.Controller
         public void Register_CreateUserThrowsException_ReturnsErrorView()
         {
             var model = new UserRegisterModel();
-            _accountDAOMock.Setup(x => x.CreateUser(model)).Throws(new Exception("Test exception"));
+
+            var usersDbSetMock = new Mock<DbSet<Users>>();
+            _quizDbContextMock.SetupGet(x => x.Users).Returns(usersDbSetMock.Object);
+            usersDbSetMock.Setup(x => x.Add(new Users()));
+            _quizDbContextMock.Setup(x => x.SaveChanges()).Throws(new Exception("Test exception"));
 
             var result = _accountController.Register(model) as ViewResult;
             var errorViewModel = result.Model as ErrorViewModel;
 
             Assert.Equal("Error", result.ViewName);
             Assert.Equal("Test exception", errorViewModel.ErrorDescription);
-            _accountDAOMock.Verify(x => x.CreateUser(It.IsAny<UserRegisterModel>()), Times.Once());
+            _quizDbContextMock.Verify(x => x.SaveChanges(), Times.Once());
         }
     }
 }

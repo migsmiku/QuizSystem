@@ -30,7 +30,7 @@
             transactionScope.Complete();
         }
 
-        public Users? Login(string userName, string password)
+        public virtual Users? Login(string userName, string password)
         {
             try
             {

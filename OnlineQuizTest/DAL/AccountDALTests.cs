@@ -10,11 +10,11 @@
 
     public class AccountDALTests
     {
-        private readonly Mock<AccountDAL> _accountDAL;
+        private readonly Mock<IAccountDAL> _accountDAL;
 
         public AccountDALTests()
         {
-            _accountDAL = new Mock<AccountDAL>();
+            _accountDAL = new Mock<IAccountDAL>();
         }
 
         [Fact]

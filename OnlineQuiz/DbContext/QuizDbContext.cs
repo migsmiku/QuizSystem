@@ -5,6 +5,8 @@
 
     public class QuizDbContext : DbContext
     {
+        public QuizDbContext() { }
+
         public QuizDbContext(DbContextOptions<QuizDbContext> options) : base(options) { }
 
         public DbSet<Options> Options { get; set; }
@@ -12,7 +14,7 @@
         public DbSet<QuizCategories> QuizCategories { get; set; }
         public DbSet<QuizQuestions> QuizQuestions { get; set; }
         public DbSet<QuizSubmissions> QuizSubmissions { get; set; }
-        public DbSet<Users> Users { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
         public DbSet<Quizzes> Quizzes { get; set; }
 
 
