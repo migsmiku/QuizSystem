@@ -1,0 +1,46 @@
+﻿@model OnlineQuiz.Models.Users
+@{
+    Layout = null;
+}
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DateOfBirth)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Phone)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Phone)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Address)
+            </dd>
+        </dl>
+    </div>
+</div>

@@ -54,7 +54,10 @@
                         Email = reader.GetString(4),
                         DateOfBirth = reader.GetDateTime(5),
                         Password = reader.GetString(6),
-                        UserRoleId = reader.GetInt32(7)
+                        UserRoleId = reader.GetInt32(7),
+                        UserStatus = reader.GetBoolean(8),
+                        Phone= reader["Phone"].ToString(),
+                        Address= reader["Address"].ToString(),
                     };
                     return user;
                 }

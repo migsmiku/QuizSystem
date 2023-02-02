@@ -1,9 +1,12 @@
 ﻿namespace OnlineQuiz.Models
 {
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Security.Permissions;
 
     public class Users
     {
+        [Key]
         public int UserID { get; set; }
 
 
@@ -27,5 +30,14 @@
         [DataType(DataType.Password)]
         [Display(Name = "Password:")]
         public string? Password { get; set; }
+
+        public string? Phone { get; set; }
+
+        public string? Address { get; set; }
+
+        public bool UserStatus { get; set; }
+
+        [InverseProperty("Users")]
+        public virtual QuizSubmissions? QuizSubmissions { get; set; }
     }
 }

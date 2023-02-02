@@ -15,7 +15,5 @@
         public QuizSubmissions? QuizSubmissions { get; set; }
         public int CurrentQuestionIndex { get; set; } = 0;
         public string? QuizName { get; set; }
-
-
     }
 }
