@@ -68,7 +68,7 @@
         [HttpPost]
         public IActionResult Register(UserRegisterModel user)
         {
-            if (!ModelState.IsValid) { return RedirectToAction("Index"); }
+            if (!ModelState.IsValid) { return Redirect("/Home/Index"); }
             if (user == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
             user.UserRoleId = (int)UserRole.User;
             var newUser = new Users()
@@ -96,8 +96,8 @@
 #else
                 return View("Error", new ErrorViewModel
                 {
-                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-                    ErrorDescription = ex.Message                 
+                    RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier,
+                    ErrorDescription = ex.Message
                 });
 #endif
             }
