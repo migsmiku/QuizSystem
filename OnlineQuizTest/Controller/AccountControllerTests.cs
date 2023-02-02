@@ -9,17 +9,22 @@ namespace OnlineQuizTest.Controller
     using Moq;
     using OnlineQuiz.Controllers;
     using OnlineQuiz.DAL;
+    using OnlineQuiz.DbContext;
     using OnlineQuiz.Models;
+    using OnlineQuiz.Models.Enum;
 
     public class AccountControllerTests
     {
         private readonly AccountController _accountController;
         private readonly Mock<IAccountDAL> _accountDAOMock;
+        private readonly Mock<QuizDbContext> _quizDbContext;
+
 
         public AccountControllerTests()
         {
             _accountDAOMock = new Mock<IAccountDAL>();
-            _accountController = new AccountController(_accountDAOMock.Object);
+            _quizDbContext = new Mock<QuizDbContext>();
+            _accountController = new AccountController(_accountDAOMock.Object, _quizDbContext.Object);
         }
 
         [Fact]
