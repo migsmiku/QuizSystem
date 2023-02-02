@@ -44,7 +44,7 @@
             ClaimsIdentity identity = new(claims, "Cookie");
             ClaimsPrincipal principal = new(identity);
 
-            await HttpContext.SignInAsync(principal);
+            _= SignIn(principal);
             return RedirectToAction("ChooseQuizCategory", "Quiz");
         }
 
@@ -64,7 +64,7 @@
         [HttpPost]
         public IActionResult Register(UserRegisterModel user)
         {
-            if (!ModelState.IsValid) { _ = Redirect("/Home/Index"); }
+            if (!ModelState.IsValid) { return Redirect("/Home/Index"); }
             if (user == null) { return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }); }
             user.UserRoleId = (int)UserRole.User;
             try
@@ -75,7 +75,7 @@
             {
                 return View("Error", new ErrorViewModel
                 {
-                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                    RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier,
                     ErrorDescription = ex.Message
                 });
             }

@@ -11,7 +11,7 @@
             _config = config;
         }
 
-        public SqlConnection Connection
+        public virtual SqlConnection Connection
         {
             get
             {

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineQuiz", "OnlineQuiz\OnlineQuiz.csproj", "{6CAE6B59-5FF9-45A7-8BF3-DA6754A3EAEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineQuiz", "OnlineQuiz\OnlineQuiz.csproj", "{6CAE6B59-5FF9-45A7-8BF3-DA6754A3EAEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineQuizTest", "OnlineQuizTest\OnlineQuizTest.csproj", "{9B1287F0-2A05-4A4A-B14A-42851322CA01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6CAE6B59-5FF9-45A7-8BF3-DA6754A3EAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CAE6B59-5FF9-45A7-8BF3-DA6754A3EAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CAE6B59-5FF9-45A7-8BF3-DA6754A3EAEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B1287F0-2A05-4A4A-B14A-42851322CA01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B1287F0-2A05-4A4A-B14A-42851322CA01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B1287F0-2A05-4A4A-B14A-42851322CA01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B1287F0-2A05-4A4A-B14A-42851322CA01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
