@@ -32,7 +32,7 @@
         }
 
         [HttpPost]
-        public IActionResult Login(Users user)
+        public async Task<IActionResult> Login(Users user)
         {
             user = _accountDAO.Login(user.UserName, user.Password);
             if (!ModelState.IsValid || user is null || !user.UserStatus) { return View("AccessDenied"); }
@@ -48,7 +48,7 @@
             ClaimsIdentity identity = new(claims, "Cookie");
             ClaimsPrincipal principal = new(identity);
 
-            SignIn(principal);
+            await HttpContext.SignInAsync(principal);
             return (UserRole)user.UserRoleId == UserRole.Admin ? RedirectToAction("Index", "Admin") : RedirectToAction("ChooseQuizCategory", "Quiz");
         }
 
